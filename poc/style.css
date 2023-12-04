@@ -1,0 +1,33 @@
+* {
+    font-family: 'Roboto', sans-serif;
+    border-radius: 10px;
+    background-color: #131F24;
+    color: #FFFFFF;
+}
+
+ul {
+    text-align: center;
+}
+
+a img {
+    width: 50px;
+}
+a {
+    border-color: #37464F;
+    border-width: 10px 10px 20px 10px;
+    background-color: #131F24;
+    box-shadow: none;
+
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    cursor: pointer;
+    padding: 10px 20px;
+    font: normal normal bold 20px / normal "bebas-neue", Helvetica, sans-serif;
+    color: rgba(255, 255, 255);
+    -o-text-overflow: clip;
+    text-overflow: clip;
+    letter-spacing: 3px;
+    background: rgba(0, 0, 0, 1);
+    border: 0px solid transparent;
+}
