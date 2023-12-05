@@ -10,13 +10,18 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>👋 Bonjour Chloé !</h1>
-    <ul>
-        <a><img src="assets/beaming_face_with_smiling_eyes_3d.png" alt="happy"></a>
-        <a><img src="assets/smiling_face_with_halo_3d.png" alt="Calm"></a>
-        <a><img src="assets/pleading_face_3d.png" alt="Sad"></a>
-        <a><img src="assets/face_with_symbols_on_mouth_3d.png" alt="Angry"></a>
-        <a><img src="assets/yawning_face_3d.png" alt="Tired"></a>
-    </ul>
+    <h1>👋 Bonjour [USER] !</h1>
+    <div class="emotion-selection">
+        <ul>
+            <a><div class="input-emotion"><img class ="click-emotion happy" src="assets/beaming_face_with_smiling_eyes_3d.png" alt="happy"></div></a>
+            <a><div class="input-emotion"><img class ="click-emotion calm" src="assets/smiling_face_with_halo_3d.png" alt="Calm"></div></a>
+            <a><div class="input-emotion"><img class ="click-emotion sad" src="assets/pleading_face_3d.png" alt="Sad"></div></a>
+            <a><div class="input-emotion"><img class ="click-emotion angry" src="assets/face_with_symbols_on_mouth_3d.png" alt="Angry"></div></a>
+            <a><div class="input-emotion"><img class ="click-emotion tired" src="assets/yawning_face_3d.png" alt="Tired"></div></a>
+        </ul>
+    </div>
+    <div id="bubble"></div>
 </body>
+<script src="script.js"></script>
 </html>
+
