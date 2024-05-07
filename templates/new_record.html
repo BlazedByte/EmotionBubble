@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nouvel enregistrement</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='new_record.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="container">
+        <h1>Nouvel enregistrement</h1>
+        <p class="error">{{error}}</p>
+        <form method="post" action="/new_record">
+            <div class="form-group">
+                <label for="date">Date de l'enregistrement</label>
+                <input type="date" id="date" name="date">
+            </div>
+            <div class="form-group">
+                <label for="face">Comment vous sentez-vous aujourd'hui ?</label>
+                <select id="face" name="face">
+                    <option value="1">Très bien</option>
+                    <option value="2">Bien</option>
+                    <option value="3">Moyen</option>
+                    <option value="4">Mal</option>
+                    <option value="5">Très mal</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="weather">Quel temps fait-il aujourd'hui ?</label>
+                <select id="weather" name="weather">
+                    <option value="sunny">Soleil</option>
+                    <option value="cloudy">Nuageux</option>
+                    <option value="raining">Pluie</option>
+                    <option value="snowing">Neige</option>
+                    <option value="stormy">Orage</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="title">Titre de la journée</label>
+                <input type="text" id="title" name="title" placeholder="Résumé rapide de la journée">
+            </div>
+            <div class="form-group">
+                <label for="text">Racontez ce que vous avez fait aujourd'hui</label></br>
+                <textarea id="text" name="text" placeholder="Ecrivez ici"></textarea>
+            </div>
+            <div class="form-group">
+                <button type="submit">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
