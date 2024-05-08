@@ -20,6 +20,33 @@ def new_record(username, record):
             break
     data.save(users)
 
+def modif_record(username, record):
+    users = data.get()
+    for i in users:
+        if i["username"] == username:
+            journal = i["journal"]
+            for jour in journal:
+                if jour["date"] == record["date"]:
+                    journal.remove(jour)
+                    break
+            journal.append(record)
+            i["journal"] = sort_journal(i["journal"])      
+            break
+    data.save(users)
+
+def delete_record(username, date):
+    users = data.get()
+    for i in users:
+        if i["username"] == username:
+            journal = i["journal"]
+            for jour in journal:
+                if jour["date"] == date:
+                    journal.remove(jour)
+                    break
+            i["journal"] = sort_journal(i["journal"])      
+            break
+    data.save(users)
+
 def is_possible_new_date(username, date):
     users = data.get()
     for i in users:
@@ -44,6 +71,7 @@ def journal():
         return redirect('/')
 
     for jour in jours:
+        jour["date_nf"] = jour["date"]
         date = jour["date"]
         date = date.split("/")
         datetime_object = datetime.datetime(int(date[2]), int(date[1]), int(date[0]))
@@ -126,6 +154,41 @@ def new_record_post():
                 "weather" : request.form['weather'],
                 "title" : request.form['title'],
                 "text" : request.form['text']})
+    return redirect('/journal')
+
+@app.route('/modify', methods=['GET'])
+def modify():
+    if session.get("username") == None:
+        return redirect('/')
+    date = request.args.get('date')
+    jours = data.get_journal(session.get("username"))
+    if jours == False:
+        return redirect('/')
+    for jour in jours:
+        if jour["date"] == date:
+            return render_template('modify_record.html', jour=jour)
+    return redirect('/journal')
+
+@app.route('/modification_post', methods=['POST'])
+def modif_post():
+    date = request.form['date']
+    modif_record(session.get("username"),
+               {"date" : date,
+                "face" : request.form['face'],
+                "weather" : request.form['weather'],
+                "title" : request.form['title'],
+                "text" : request.form['text']})
+    return redirect('/journal')
+
+@app.route('/delete_record', methods=['GET'])
+def delete():
+    if session.get("username") == None:
+        return redirect('/')
+    date = request.args.get('date')
+    jours = data.get_journal(session.get("username"))
+    if jours == False:
+        return redirect('/')
+    delete_record(session.get("username"), date)
     return redirect('/journal')
 
 SETTINGS = data.get("settings")

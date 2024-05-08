@@ -19,7 +19,7 @@
 
     <main>
         {% for jour in jours%}
-        <div class="card">
+        <a class="card" href="/modify?date={{jour['date_nf']}}">
             <div class="card-header">
                 <div class="card-img">
                     <img class="c1" src="{{ url_for('static', filename=jour['face']) }}" alt="Image ressenti de l'enregistrement">
@@ -31,7 +31,7 @@
                 <h2>{{ jour["title"] }}</h2>
                 <p>{{ jour["text"] }}</p>
             </div>
-        </div>
+        </a>
         {% endfor %}
     </main>
 

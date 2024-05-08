@@ -33,8 +33,8 @@ Pour utiliser l'application, il vous suffit de vous rendre sur l'adresse IP de v
 - [x] Ajouter un système de connexion
 - [x] Ajouter un système d'inscription
 - [x] Ajouter vérifications des formulaires via HTML
-- [ ] Possibilité de modifier un enregistrement
-- [ ] Nouvelle UI pour l'ajout d'un enregistrement
+- [x] Possibilité de modifier un enregistrement
+- [ ] Nouvelle UI pour l'ajout/modif d'un enregistrement
 - [ ] Ajouter un système de partage de données entre utilisateurs
 - [ ] Ajouter un système de statistiques
 - [ ] Ajouter une vue "calendrier" pour voir les émotions de chaque jour
