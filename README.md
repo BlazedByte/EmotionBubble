@@ -4,7 +4,19 @@ EmotionBubble est une application web qui vous permet de suivre vos émotions et
 
 ## Installation
 
-Pour installer l'application, il vous suffit de cloner le projet sur votre machine. Ensuite, vous pouvez lancer l'application en ouvrant le fichier `main.py` avec Python.
+Pour installer l'application, il vous suffit de cloner le projet sur votre machine.
+```bash
+git clone https://github.com/BlazedByte/EmotionBubble.git
+```
+
+N'oubliez pas d'installer les dépendances avec la commande suivante :
+```bash
+pip install -r requirements.txt
+```
+
+## Lancement
+
+Ensuite, vous pouvez lancer l'application en ouvrant le fichier `main.py` avec Python.
 Lors du premier lancement, le fichier `data.json` sera créé. Il s'agit du fichier de sauvegarde de vos données.
 Vous devrez alors le modifier une première fois pour y inscrire dans la section `settings`:
 - `secret_key` : une clé secrète pour sécuriser les cookies sur les appareils des utilisateurs
