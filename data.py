@@ -45,7 +45,8 @@ def initialize_data():
             json.dump({
                     "settings": {
                         "secret_key": "REPLACE THE SECRET KEY HERE",
-                        "invitation_code": "REPLACE THE SECRET INVITATION CODE HERE"
+                        "invitation_code": "REPLACE THE SECRET INVITATION CODE HERE",
+                        "ip": "REPLACE THE IP HERE, EXAMPLE : 192.168.1.42"
                     },
                     "data": []
                 }, file, indent=4)
