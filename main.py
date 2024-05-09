@@ -95,7 +95,7 @@ def authentification():
         session["username"] = username
         return redirect('/journal')
     else:
-        session.pop("username", None)
+        session.clear()
         return render_template('login.html', error="Les informations transmises ne nous on pas permis de vous authentifier. Veuillez réessayer.")
 
 @app.route('/deconnection')
