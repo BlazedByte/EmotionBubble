@@ -18,7 +18,37 @@
     </header>
 
     <main>
+        {% if today["face"] == None %}
+        <div class="today-card">
+            <h1><span>Aujourd'hui</span></h1>
+            <br>
+            <div class="card no_record"><img class="no_record_img" src="{{ url_for('static', filename='assets/memo_3d.png') }}" alt=""><p>Vous n'avez encore rien enregistré pour aujourd'hui</p></div>
+            </a>
+        </div>
+        {% else %}
+        <div class="today-card">
+            <h1><span>Aujourd'hui</span></h1>
+            <br>
+            <a class="card" href="/modify?date={{today['date_nf']}}">
+                <div class="card-header">
+                    <div class="card-img">
+                        <img class="c1" src="{{ url_for('static', filename=today['face']) }}" alt="Image ressenti de l'enregistrement">
+                        <img class="c1" src="{{ url_for('static', filename=today['weather']) }}" alt="Image météo de l'enregistrement">
+                    </div>
+                    <p>{{ today["date"] }}</p>
+                </div>
+                <div class="card-txt">
+                    <h2>{{ today["title"] }}</h2>
+                    <p>{{ today["text"] }}</p>
+                </div>
+            </a>
+        </div>
+        {% endif %}
+
         {% for jour in jours%}
+        {% if jour["face"] == None %}
+        <div class="card no_record"><img class="no_record_img" src="{{ url_for('static', filename='assets/memo_3d.png') }}" alt=""><p>Pas d'enregistrement pour le {{ jour["date"] }}</p></div>
+        {% else %}
         <a class="card" href="/modify?date={{jour['date_nf']}}">
             <div class="card-header">
                 <div class="card-img">
@@ -32,6 +62,7 @@
                 <p>{{ jour["text"] }}</p>
             </div>
         </a>
+        {% endif %}
         {% endfor %}
     </main>
 

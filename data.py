@@ -1,4 +1,4 @@
-import os, json
+import os, json, datetime
 
 faces = {
     "1" : "assets/faces/1.png",
@@ -91,3 +91,24 @@ def new_user(username, password):
     users = get()
     users.append({"username" : username, "password" : password, "journal" : []})
     save(users)
+
+def get_30_last_days():
+    days = []
+    for i in range(30):
+        days.append((datetime.date.today() - datetime.timedelta(days=i)).strftime("%d/%m/%Y"))
+    return days
+
+def get_30_passed_days(username):
+    journal = get_journal(username)
+    days = get_30_last_days()
+    passed_days = []
+    for day in days:
+        found = False
+        for entry in journal:
+            if entry["date"] == day:
+                passed_days.append(entry)
+                found = True
+                break
+        if not found:
+            passed_days.append({"date": day,"face": None,"weather": None,"title": None,"text": None})
+    return passed_days

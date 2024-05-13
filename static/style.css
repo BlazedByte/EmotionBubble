@@ -50,7 +50,7 @@ main {
 }
 
 .card{
-    margin: 0px 10px 10px 10px;
+    margin: 0px 10px 15px 10px;
     width: 100%;
     background-color: #FFFFFF;
     border-radius: 15px;
@@ -128,4 +128,44 @@ footer {
     background-color: #FFFFFF;
     border-radius: 100%;
     padding: 5px;
+}
+
+.no_record {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #e6e6e6;
+    color: #9a9a9a;
+}
+
+.no_record_img {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    margin-right: 5px;
+}
+
+.today-card {
+    background-color: #32746D;
+    width: 100%;
+    border-radius: 15px;
+    margin-bottom: 50px;
+}
+
+.today-card h1 {
+    margin: 0px 0px 0px 8px;
+    padding: 0px;
+}
+
+.today-card h1 span{
+    font-size: small;
+    font-weight: bolder;
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 5px;
+    margin: 5px;
+}
+
+.today-card .card {
+    width: auto;
 }
