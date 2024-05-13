@@ -34,7 +34,13 @@ Pour utiliser l'application, il vous suffit de vous rendre sur l'adresse IP de v
 - [x] Ajouter un système d'inscription
 - [x] Ajouter vérifications des formulaires via HTML
 - [x] Possibilité de modifier un enregistrement
+- [ ] Affichage des dates initiales : 30 derniers jours
+- [ ] Ajouter emojis lors de la sélection de l'émotion
+- [ ] Modifier la modification pour permettre l'auto sélection des paramètres précédemment sélectionnés
 - [ ] Nouvelle UI pour l'ajout/modif d'un enregistrement
-- [ ] Ajouter un système de partage de données entre utilisateurs
+- [ ] Ajouter un système de partage de données entre utilisateurs (+ page amis)
 - [ ] Ajouter un système de statistiques
 - [ ] Ajouter une vue "calendrier" pour voir les émotions de chaque jour
+- [ ] Ajouter la page "paramètres"
+- [ ] Page d'administration du serveur
+- [ ] Application mobile avec flutter pour le client
