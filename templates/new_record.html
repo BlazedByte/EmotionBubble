@@ -6,40 +6,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <div class="container">
+    <header>
         <h1>Nouvel enregistrement</h1>
+    </header>
+    <div class="container">
         <p class="error">{{error}}</p>
         <form method="post" action="/new_record">
             <div class="form-group">
-                <label for="date">Date de l'enregistrement</label>
+                <h2 for="date">Quelle est la date de cet enregistrement ?</h2>
                 <input type="date" id="date" name="date" required>
             </div>
             <div class="form-group">
-                <label for="face">Comment vous sentez-vous aujourd'hui ?</label>
-                <select id="face" name="face">
-                    <option value="1">😁 Très bien</option>
-                    <option value="2">😇 Bien</option>
-                    <option value="3">🥱 Moyen</option>
-                    <option value="4">🥺 Mal</option>
-                    <option value="5">🤬 Très mal</option>
-                </select>
+                <h2>Comment vous sentez vous ?</h2>
+                <div class="radio-list">
+                    <div>
+                        <input type="radio" id="emotion1" name="face" value="1" required>
+                        <label for="emotion1"><img src="{{ url_for('static', filename='assets/faces/1.png') }}" alt="😁 Très bien"></label>
+                    </div>
+                    <div>
+                        <input type="radio" id="emotion2" name="face" value="2" required>
+                        <label for="emotion2"><img src="{{ url_for('static', filename='assets/faces/2.png') }}" alt="😇 Bien"></label>
+                    </div>
+                    <div>
+                        <input type="radio" id="emotion3" name="face" value="3" required>
+                        <label for="emotion3"><img src="{{ url_for('static', filename='assets/faces/3.png') }}" alt="🥱 Moyen"></label>
+                    </div>
+                    <div>
+                        <input type="radio" id="emotion4" name="face" value="4" required>
+                        <label for="emotion4"><img src="{{ url_for('static', filename='assets/faces/4.png') }}" alt="🥺 Mal"></label>
+                    </div>
+                    <div>
+                        <input type="radio" id="emotion5" name="face" value="5" required>
+                        <label for="emotion5"><img src="{{ url_for('static', filename='assets/faces/5.png') }}" alt="🤬 Très mal"></label>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
-                <label for="weather">Quel temps fait-il aujourd'hui ?</label>
-                <select id="weather" name="weather">
-                    <option value="sunny">☀️ Soleil</option>
-                    <option value="cloudy">☁️ Nuageux</option>
-                    <option value="raining">🌧️ Pluie</option>
-                    <option value="snowing">🌨️ Neige</option>
-                    <option value="stormy">⛈️ Orage</option>
-                </select>
+                <h2>Quel temps fait-il ?</h2>
+                <div class="radio-list">
+                    <div>
+                        <input type="radio" id="weather1" name="weather" value="sunny" required>
+                        <label for="weather1"><img src="{{ url_for('static', filename='assets/weather/sun_3d.png') }}" alt="☀️ Soleil"></label>
+                    </div>
+                    <div>
+                        <input type="radio" id="weather2" name="weather" value="cloudy" required>
+                        <label for="weather2"><img src="{{ url_for('static', filename='assets/weather/cloud_3d.png') }}" alt="☁️ Nuageux"></label>
+                    </div>
+                    <div>
+                        <input type="radio" id="weather3" name="weather" value="raining" required>
+                        <label for="weather3"><img src="{{ url_for('static', filename='assets/weather/cloud_with_rain_3d.png') }}" alt="🌧️ Pluie"></label>
+                    </div>
+                    <div>
+                        <input type="radio" id="weather4" name="weather" value="snowing" required>
+                        <label for="weather4"><img src="{{ url_for('static', filename='assets/weather/cloud_with_snow_3d.png') }}" alt="🌨️ Neige"></label>
+                    </div>
+                    <div>
+                        <input type="radio" id="weather5" name="weather" value="stormy" required>
+                        <label for="weather5"><img src="{{ url_for('static', filename='assets/weather/cloud_with_lightning_and_rain_3d.png') }}" alt="⛈️ Orage"></label>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
-                <label for="title">Titre de la journée</label>
+                <h2>Quel titre donner à votre journée ?</h2>
                 <input type="text" id="title" name="title" placeholder="Résumé rapide de la journée">
             </div>
             <div class="form-group">
-                <label for="text">Racontez ce que vous avez fait aujourd'hui</label></br>
+                <h2>Racontez ce que vous avez fait aujourd'hui</h2></br>
                 <textarea id="text" name="text" placeholder="Ecrivez ici"></textarea>
             </div>
             <div class="form-group">

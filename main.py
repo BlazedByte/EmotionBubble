@@ -193,6 +193,11 @@ def delete():
     delete_record(session.get("username"), date)
     return redirect('/journal')
 
+@app.route('/menu')
+def menu():
+    return render_template('menu.html',
+                           user_name=session.get("username"))
+
 SETTINGS = data.get("settings")
 if __name__ == '__main__':
     app.secret_key = SETTINGS["secret_key"]
