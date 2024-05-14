@@ -38,7 +38,8 @@ Pour utiliser l'application, il vous suffit de vous rendre sur l'adresse IP de v
 - [x] Ajouter emojis lors de la sélection de l'émotion
 - [x] Modifier la modification pour permettre l'auto sélection des paramètres précédemment sélectionnés
 - [x] Nouvelle UI pour l'ajout/modif d'un enregistrement
-- [ ] Ajouter un menu avec les différentes pages en type 'bento'
+- [x] Ajouter un menu avec les différentes pages en type 'bento'
+- [ ] Améliorer l'UI de l'accueil Bento
 - [ ] Ajouter un système de partage de données entre utilisateurs (+ page amis)
 - [ ] Ajouter un système de statistiques
 - [ ] Ajouter une vue "calendrier" pour voir les émotions de chaque jour

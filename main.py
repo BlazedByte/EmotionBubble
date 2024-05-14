@@ -85,6 +85,28 @@ def journal():
                            jours=jours[1:],
                            user_name=session.get("username"))
 
+@app.route('/historique')
+def historique():
+    if session.get("username") == None:
+        return redirect('/')
+    jours = data.get_journal(session.get("username"))
+
+    for jour in jours:
+        if jour['face'] != None:
+            jour["date_nf"] = jour["date"]
+            date = jour["date"]
+            date = date.split("/")
+            datetime_object = datetime.datetime(int(date[2]), int(date[1]), int(date[0]))
+            day_name = data.week[datetime_object.strftime("%A")]
+            month_name = data.month[datetime_object.strftime("%B")]
+            jour["date"] = day_name + datetime_object.strftime(" %d ") + month_name + datetime_object.strftime(" %Y")
+            jour["face"] = data.faces[jour["face"]]
+            jour["weather"] = data.weather[jour["weather"]]
+
+    return render_template('historique.html',
+                           jours=jours,
+                           user_name=session.get("username"))
+
 @app.route('/connexion', methods=['POST'])
 def authentification():
     username = request.form.get('username', '')

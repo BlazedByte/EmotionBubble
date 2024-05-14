@@ -53,7 +53,7 @@ def initialize_data():
         exit("Please replace the secret key and the invitation code in the data.json file.")
 
 def get(type="data"):
-    with open("data.json", "r") as file:
+    with open("data.json", "r", encoding="utf-8") as file:
         data = json.load(file)
     if type == "all":
         return data
