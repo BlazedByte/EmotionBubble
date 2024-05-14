@@ -4,7 +4,7 @@
 
 body {
     background-color: #f8f3f1;
-    padding: 17px;
+    width: auto;
 }
 
 header {
@@ -51,7 +51,7 @@ main {
 
 .card{
     margin: 0px 10px 15px 10px;
-    width: 100%;
+    width: auto;
     background-color: #FFFFFF;
     border-radius: 15px;
     padding: 5px;
@@ -106,6 +106,9 @@ main {
     text-align: justify;
 }
 
+.center-list-card {
+    width: 100%;
+}
 
 
 footer {
@@ -164,8 +167,4 @@ footer {
     border-radius: 10px;
     padding: 5px;
     margin: 5px;
-}
-
-.today-card .card {
-    width: auto;
 }

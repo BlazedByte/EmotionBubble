@@ -198,6 +198,13 @@ def menu():
     return render_template('menu.html',
                            user_name=session.get("username"))
 
+@app.route('/get_all_journal_data')
+def get_all_journal_data():
+    if session.get("username") == None:
+        return redirect('/')
+    jours = data.get_journal(session.get("username"))
+    return jours
+
 SETTINGS = data.get("settings")
 if __name__ == '__main__':
     app.secret_key = SETTINGS["secret_key"]

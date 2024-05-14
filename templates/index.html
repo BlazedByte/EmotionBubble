@@ -46,27 +46,29 @@
         </div>
         {% endif %}
 
-        {% for jour in jours%}
-        {% if jour["face"] == None %}
-        <div class="card no_record"><img class="no_record_img" src="{{ url_for('static', filename='assets/memo_3d.png') }}" alt=""><p>Pas d'enregistrement pour le {{ jour["date"] }}</p></div>
-        {% else %}
-        <a class="card" href="/modify?date={{jour['date_nf']}}">
-            <div class="card-header">
-                <div class="card-img">
-                    <img class="c1" src="{{ url_for('static', filename=jour['face']) }}" alt="Image ressenti de l'enregistrement">
-                    <img class="c1" src="{{ url_for('static', filename=jour['weather']) }}" alt="Image météo de l'enregistrement">
+        <div class="center-list-card">
+            {% for jour in jours%}
+            {% if jour["face"] == None %}
+            <div class="card no_record"><img class="no_record_img" src="{{ url_for('static', filename='assets/memo_3d.png') }}" alt=""><p>Pas d'enregistrement pour le {{ jour["date"] }}</p></div>
+            {% else %}
+            <a class="card" href="/modify?date={{jour['date_nf']}}">
+                <div class="card-header">
+                    <div class="card-img">
+                        <img class="c1" src="{{ url_for('static', filename=jour['face']) }}" alt="Image ressenti de l'enregistrement">
+                        <img class="c1" src="{{ url_for('static', filename=jour['weather']) }}" alt="Image météo de l'enregistrement">
+                    </div>
+                    <p>{{ jour["date"] }}</p>
                 </div>
-                <p>{{ jour["date"] }}</p>
-            </div>
-            {% if jour["title"] != "" or jour["text"] != "" %}
-            <div class="card-txt">
-                <h2>{{ jour["title"] }}</h2>
-                <p>{{ jour["text"] }}</p>
-            </div>
+                {% if jour["title"] != "" or jour["text"] != "" %}
+                <div class="card-txt">
+                    <h2>{{ jour["title"] }}</h2>
+                    <p>{{ jour["text"] }}</p>
+                </div>
+                {% endif %}
+            </a>
             {% endif %}
-        </a>
-        {% endif %}
-        {% endfor %}
+            {% endfor %}            
+        </div>
     </main>
 
     <footer>
