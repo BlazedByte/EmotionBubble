@@ -85,7 +85,7 @@ def journal():
                            jours=jours[1:],
                            user_name=session.get("username"))
 
-@app.route('/connection', methods=['POST'])
+@app.route('/connexion', methods=['POST'])
 def authentification():
     username = request.form.get('username', '')
     password = request.form.get('password', '')
@@ -100,8 +100,8 @@ def authentification():
         session.clear()
         return render_template('login.html', error="Les informations transmises ne nous on pas permis de vous authentifier. Veuillez réessayer.")
 
-@app.route('/deconnection')
-def deconnection():
+@app.route('/deconnexion')
+def deconnexion():
     session.clear()
     return render_template('login.html')
 
