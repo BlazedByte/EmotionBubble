@@ -37,7 +37,7 @@
                     </div>
                     <p>{{ today["date"] }}</p>
                 </div>
-                {% if today["title"] != None or today["text"] != None %}
+                {% if today["title"] != "" or today["text"] != "" %}
                 <div class="card-txt">
                     <h2>{{ today["title"] }}</h2>
                     <p>{{ today["text"] }}</p>
@@ -59,7 +59,7 @@
                 </div>
                 <p>{{ jour["date"] }}</p>
             </div>
-            {% if jour["title"] != None or jour["text"] != None %}
+            {% if jour["title"] != "" or jour["text"] != "" %}
             <div class="card-txt">
                 <h2>{{ jour["title"] }}</h2>
                 <p>{{ jour["text"] }}</p>
