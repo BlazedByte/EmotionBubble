@@ -149,10 +149,12 @@ footer {
 }
 
 .today-card {
-    background-color: #32746D;
+    background-color: #32746d;
     width: 100%;
     border-radius: 15px;
     margin-bottom: 50px;
+    background: rgb(131,58,180);
+    background: linear-gradient(326deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
 }
 
 .today-card h1 {
