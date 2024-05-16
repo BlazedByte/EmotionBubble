@@ -48,9 +48,17 @@ def initialize_data():
                         "invitation_code": "REPLACE THE SECRET INVITATION CODE HERE",
                         "ip": "REPLACE THE IP HERE, EXAMPLE : 192.168.1.42"
                     },
-                    "data": []
+                    "data": {
+                        "admin" : {
+                            "username": "admin",
+                            "password": "REPLACE BY THE HASHED PASSWORD HERE",
+                            "admin": True,
+                            "journal": {}
+                        }
+                    }
                 }, file, indent=4)
         exit("Please replace the secret key and the invitation code in the data.json file.")
+
 
 def get(type="data"):
     with open("data.json", "r", encoding="utf-8") as file:
@@ -61,36 +69,49 @@ def get(type="data"):
 
 def known_username(username):
     users = get()
-    for i in users:
-        if i["username"] == username:
-            return True
-    return False
+    return username in users.keys()
 
 def correct_auth(username, password):
     users = get()
-    for i in users:
-        if i["username"] == username:
-            if i["password"] == password:
-                return True
-    return False
+    return users[username]["password"] == password
 
 def get_journal(username):
     users = get()
-    for i in users:
-        if i["username"] == username:
-            return i["journal"]
-    return False
+    if not(known_username(username)):
+        return False
+    return users[username]["journal"]
 
-def save(list_users):
+def save(users_dict):
     all_data = get("all")
-    all_data["data"] = list_users
+    all_data["data"] = users_dict
     with open("data.json", "w", encoding="utf-8") as file:
         json.dump(all_data, file, indent=4)
 
 def new_user(username, password):
     users = get()
-    users.append({"username" : username, "password" : password, "journal" : []})
+    users[username] = {"username" : username, "password" : password, "journal" : {}}
     save(users)
+
+def record_new(username, record):
+    users = get()
+    users[username]["journal"][record["date"]] = record
+    # Sort the journal by date
+    users[username]["journal"] = dict(sorted(users[username]["journal"].items(), key=lambda x: datetime.datetime.strptime(x[0], '%d/%m/%Y'), reverse=True))
+    save(users)
+
+def record_modify(username, record):
+    users = get()
+    users[username]["journal"][record["date"]] = record
+    save(users)
+
+def record_delete(username, date):
+    users = get()
+    del users[username]["journal"][date]
+    save(users)
+
+def exist_record(username, date):
+    journal = get_journal(username)
+    return date in journal.keys()
 
 def get_30_last_days():
     days = []
@@ -102,13 +123,9 @@ def get_30_passed_days(username):
     journal = get_journal(username)
     days = get_30_last_days()
     passed_days = []
-    for day in days:
-        found = False
-        for entry in journal:
-            if entry["date"] == day:
-                passed_days.append(entry)
-                found = True
-                break
-        if not found:
-            passed_days.append({"date": day,"face": None,"weather": None,"title": None,"text": None})
+    for date in days:
+        if date in journal.keys():
+            passed_days.append(journal[date])
+        else:
+            passed_days.append({"date": date,"face": None,"weather": None,"title": None,"text": None})
     return passed_days
