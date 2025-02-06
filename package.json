@@ -1,0 +1,16 @@
+{
+    "name": "emotionbubble",
+    "version": "1.0.0",
+    "type": "module",
+    "description": "A simple web app that allows users to post their emotions.",
+    "main": "server.mjs",
+    "scripts": {
+        "start": "node server.mjs"
+    },
+    "dependencies": {
+        "ejs": "latest",
+        "express": "latest",
+        "express-session": "latest",
+        "sqlite3": "^5.1.7"
+    }
+}
