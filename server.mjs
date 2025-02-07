@@ -57,6 +57,12 @@ async function registrationUser(user) {
 
 async function getTodayRecord(username) {
     let record = await database.getRecords(username, 1);
+    if (record.length == 0) {
+        return {
+            mood: null,
+            weather: null,
+        };
+    }
     return record[0];
 }
 

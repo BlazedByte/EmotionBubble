@@ -8,7 +8,14 @@
 </head>
 <body>
     <header class="d-flex justify-content-between align-items-center p-3 bg-light">
-        <h1>Journal <span class="h6 font-weight-light">de <%= user.name %></span></h1>
+        <h1>Journal
+            <span class="h6 font-weight-light">
+                de <%= user.name %>
+            </span>
+            <% if (user.admin) { %>
+            <img src="/icons/badge-check.svg" alt="Administrateur" class="img-fluid me-2" style="width: 20px;">
+            <% } %>
+        </h1>
         <nav>
             <ul class="list-unstyled d-flex mb-0">
                 <li class="ml-3 dropdown">
