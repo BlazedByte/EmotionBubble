@@ -15,6 +15,7 @@
             <% if (user.admin) { %>
             <img src="/icons/badge-check.svg" alt="Administrateur" class="img-fluid me-2" style="width: 20px;">
             <% } %>
+            > Historique
         </h1>
         <nav>
             <ul class="list-unstyled d-flex mb-0">
@@ -62,42 +63,6 @@
     </header>
 
     <main class="container mt-4">
-        <!-- Enregistrement du jour -->
-        <% if (!today.mood) { %>
-        <div class="card mb-4">
-            <div class="card-body text-center" style="background: linear-gradient(270deg, #f6d365 0%, #fda085 100%);">
-                <h1 class="card-title">Aujourd'hui</h1>
-                <img src="/static/assets/memo_3d.png" alt="" class="img-fluid mb-3" style="width: 42px;">
-                <p class="card-text">Vous n'avez encore rien enregistré pour aujourd'hui</p>
-            </div>
-        </div>
-        <% } else { %>
-        <div class="card mb-4">
-            <a href="/consulter?date=<%= today.date %>" class="text-decoration-none text-dark">
-                <div class="card-header d-flex justify-content-between align-items-center" style="background: linear-gradient(270deg, #f6d365 0%, #fda085 100%);">
-                    <div>
-                        <img src="/faces/<%= today.mood %>.png" alt="Image ressenti de l'enregistrement" class="img-fluid rounded mr-2" style="width: 42px;">
-                        <img src="/weather/<%= today.weather %>.png" alt="Image météo de l'enregistrement" class="img-fluid rounded" style="width: 42px;">
-                    </div>
-                    <div>
-                        <p class="mb-0"><%= today.date %></p>
-                        <% if (today.visibility) { %>
-                            <img src="/icons/eye.svg" alt="Oeil" class="img-fluid me-2" style="width: 20px;">
-                        <% } else { %>
-                            <img src="/icons/eye-closed.svg" alt="Oeil fermé" class="img-fluid me-2" style="width: 20px;">
-                        <% } %>
-                    </div>
-                </div>
-                <% if (today.title || today.content) { %>
-                <div class="card-body">
-                    <h2 class="card-title"><%= today.title %></h2>
-                    <p class="card-text"><%= today.content %></p>
-                </div>
-                <% } %>
-            </a>
-        </div>
-        <% } %>
-
         <!-- Liste des enregistrements -->
         <div class="list-group">
             <% jours.forEach(jour => { %>
@@ -118,14 +83,7 @@
                     </div>
                     <% } %>
                 </div>
-                <div class="d-flex align-items-center">
-                    <p class="mb-0 me-2"><%= jour.date %></p>
-                    <% if (jour.visibility) { %>
-                        <img src="/icons/eye.svg" alt="Oeil" class="img-fluid me-2" style="width: 20px;">
-                    <% } else { %>
-                        <img src="/icons/eye-closed.svg" alt="Oeil fermé" class="img-fluid me-2" style="width: 20px;">
-                    <% } %>
-                </div>
+                <p class="mb-0"><%= jour.date %></p>
             </a>
             <% } %>
             <% }); %>

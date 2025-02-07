@@ -33,6 +33,35 @@ function tosha256(data) {
     return crypto.createHash('sha256').update(data).digest('hex');
 }
 
+function getTodaysDate() {
+    let date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+    if (month < 10) {
+        month = `0${month}`;
+    }
+    if (day < 10) {
+        day = `0${day}`;
+    }
+    return `${year}-${month}-${day}`;
+}
+
+function dateDelta(date, deltaJours) {
+    let dateObj = new Date(date);
+    dateObj.setDate(dateObj.getDate() + deltaJours);
+    let day = dateObj.getDate();
+    let month = dateObj.getMonth() + 1;
+    let year = dateObj.getFullYear();
+    if (month < 10) {
+        month = `0${month}`;
+    }
+    if (day < 10) {
+        day = `0${day}`;
+    }
+    return `${year}-${month}-${day}`;
+}
+
 async function authenticateUser(username, passwordHash) {
     let user = await database.chechAuth(username, passwordHash);
     return user;
@@ -57,7 +86,7 @@ async function registrationUser(user) {
 
 async function getTodayRecord(username) {
     let record = await database.getRecords(username, 1);
-    if (record.length == 0) {
+    if (record.length == 0 || record[0].date != getTodaysDate()) {
         return {
             mood: null,
             weather: null,
@@ -67,14 +96,32 @@ async function getTodayRecord(username) {
 }
 
 async function getLastRecords(username) {
-    // TODO vérification si les jours sont dans la liste des 31 derniers jours
     let records = await database.getRecords(username, 31);
-    records.shift();
-    return records;
+    let days = [];
+    for (let i = 1; i < 31; i++) {
+        let date = dateDelta(getTodaysDate(), -i);
+        let record = records.find((r) => r.date == date);
+        if (record) {
+            days.push(record);
+        } else {
+            days.push({
+                mood: null,
+                weather: null,
+                date: date,
+                visibility: 0,
+                title: null,
+                content: null
+            });
+        }
+    }
+    return days;
 }
 
 async function getAllRecords(username) {
     let records = await database.getRecords(username);
+    if (records.length == 0) {
+        return [];
+    }
     return records;
 }
 
@@ -102,6 +149,18 @@ app.get('/dashboard', async (req, res) => {
             user: req.session,
             today : await getTodayRecord(req.session.username),
             jours : await getLastRecords(req.session.username)
+        });
+    } else {
+        res.redirect('/login');
+    }
+});
+
+// Historique
+app.get('/historique', async (req, res) => {
+    if (req.session.username) {
+        res.render('history', {
+            user: req.session,
+            jours : await getAllRecords(req.session.username)
         });
     } else {
         res.redirect('/login');
