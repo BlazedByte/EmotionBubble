@@ -83,7 +83,14 @@
                     </div>
                     <% } %>
                 </div>
-                <p class="mb-0"><%= jour.date %></p>
+                <div class="d-flex align-items-center">
+                    <p class="mb-0 me-2"><%= jour.date %></p>
+                    <% if (jour.visibility) { %>
+                        <img src="/icons/eye.svg" alt="Oeil" class="img-fluid me-2" style="width: 20px;">
+                    <% } else { %>
+                        <img src="/icons/eye-closed.svg" alt="Oeil fermé" class="img-fluid me-2" style="width: 20px;">
+                    <% } %>
+                </div>
             </a>
             <% } %>
             <% }); %>

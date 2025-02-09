@@ -79,8 +79,8 @@
                         <img src="/faces/<%= today.mood %>.png" alt="Image ressenti de l'enregistrement" class="img-fluid rounded mr-2" style="width: 42px;">
                         <img src="/weather/<%= today.weather %>.png" alt="Image météo de l'enregistrement" class="img-fluid rounded" style="width: 42px;">
                     </div>
-                    <div>
-                        <p class="mb-0"><%= today.date %></p>
+                    <div class="d-flex align-items-center">
+                        <p class="mb-0 me-2"><%= today.date %></p>
                         <% if (today.visibility) { %>
                             <img src="/icons/eye.svg" alt="Oeil" class="img-fluid me-2" style="width: 20px;">
                         <% } else { %>

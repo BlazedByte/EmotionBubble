@@ -134,12 +134,12 @@ app.get('/', (req, res) => {
 
 // Page de login
 app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views/login.html'));
+    res.render('login', { error : null });
 });
 
 // Page de register
 app.get('/register', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views/register.html'));
+    res.render('register', { error : null });
 });
 
 // Dashboard
@@ -151,7 +151,12 @@ app.get('/dashboard', async (req, res) => {
             jours : await getLastRecords(req.session.username)
         });
     } else {
-        res.redirect('/login');
+        res.render('login', {
+            error : {
+                type : 'danger',
+                content : 'Vous devez être connecté pour accéder à cette page.'
+            }
+        });
     }
 });
 
@@ -163,7 +168,12 @@ app.get('/historique', async (req, res) => {
             jours : await getAllRecords(req.session.username)
         });
     } else {
-        res.redirect('/login');
+        res.render('login', {
+            error : {
+                type : 'danger',
+                content : 'Vous devez être connecté pour accéder à cette page.'
+            }
+        });
     }
 });
 
@@ -191,7 +201,12 @@ app.post('/login-post', async (req, res) => {
         req.session.friends = auth.friends;
         res.redirect('/dashboard');
     } else {
-        res.redirect('/login');
+        res.render('login', {
+            error : {
+                type : 'danger',
+                content : 'Les informations saisies sont incorrectes.'
+            }
+        });
     }
 });
 
@@ -202,6 +217,16 @@ app.post('/register-post', async (req, res) => {
     const password = req.body.password;
     const password2 = req.body.passwordrepeat;
     const hash = tosha256(password);
+
+    if (password != password2) {
+        res.render('register', {
+            error : {
+                type : 'danger',
+                content : 'Les mots de passes ne correspondent pas.'
+            }
+        });
+        return;
+    }
 
     const reg = await registrationUser({
         username: username,
@@ -214,7 +239,12 @@ app.post('/register-post', async (req, res) => {
     if (reg) {
         res.redirect('/login');
     } else {
-        res.redirect('/register');
+        res.render('register', {
+            error : {
+                type : 'danger',
+                content : 'Ce nom d\'utilisateur est déjà utilisé.'
+            }
+        });
     }
 });
 
