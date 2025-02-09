@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Emotion bubble - Enregistrement</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div>
+        <form method="post" action="/modification-post" class="container my-5">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <% if (record.date) { %>
+                            <h1 class="card-title text-center mb-4">Modifier l'enregistrement du <%= record.date %></h1>
+                        <% } else { %>
+                            <h1 class="card-title text-center mb-4">Nouvel enregistrement</h1>
+                        <% } %>
+
+                        <a href="/dashboard"><img src="/icons/xmark.svg" alt="Annuler la modification"></a>
+                    </div>
+
+                    <% if (error) { %>
+                        <div class="alert alert-<%= error.type %>" role="alert">
+                            <%= error.content %>
+                        </div>
+                    <% } %>
+                    
+                    <hr>
+
+                    <label for="date" class="mb-2">Quelle est la date de cet enregistrement ?</label>
+                    <div class="mb-3 input-group">
+                        <span class="input-group-text">📅</span>
+                        <% if (record.date) { %>
+                            <input name="date" class="form-control" type="date" id="date" required value="<%= record.date %>" disabled>
+                            <input type="hidden" name="date" value="<%= record.date %>">
+                        <% } else { %>
+                            <input name="date" class="form-control" type="date" id="date" name="date" required>
+                        <% } %>
+                    </div>
+
+                    <label for="emotion" class="mb-2">Comment vous sentez vous ?</label>
+                    <div class="mb-3 input-group">
+                        <% let moods = ['😁 Très bien', '😇 Bien', '🥱 Moyen', '🥺 Mal', '🤬 Très mal'] %>
+                        <% for (let i = 1; i <= 5; i++) { %>
+                            <div class="form-check form-check-inline">
+                                <% if (record.mood == i) { %>
+                                    <input class="btn-check form-control" type="radio" id="emotion<%= i %>" name="mood" value="<%= i %>" required checked>
+                                <% } else { %>
+                                    <input class="btn-check" type="radio" id="emotion<%= i %>" name="mood" value="<%= i %>" required>
+                                <% } %>
+                                <label class="btn btn-outline-primary" for="emotion<%= i %>"><img src="/faces/<%= i %>.png" alt="<%= moods[i-1] %>" width="50em" height="50em"></label>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <label for="weather" class="mb-2">Quel temps fait-il ?</label>
+                    <div class="mb-3 input-group">
+                        <% let weathers = ['☀️ Soleil', '☁️ Nuageux', '🌧️ Pluie', '⛈️ Orage', '🌨️ Neige'] %>
+                        <% for (let i = 1; i <= 5; i++) { %>
+                            <div class="form-check form-check-inline">
+                                <% if (record.weather == i) { %>
+                                    <input class="btn-check" type="radio" id="weather<%= i %>" name="weather" value="<%= i %>" required checked>
+                                <% } else { %>
+                                    <input class="btn-check" type="radio" id="weather<%= i %>" name="weather" value="<%= i %>" required>
+                                <% } %>
+                                <label class="btn btn-outline-primary" for="weather<%= i %>"><img src="/weather/<%= i %>.png" alt="<%= weathers[i-1] %>" width="50em" height="50em"></label>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <hr>
+
+                    <div class="form-floating mb-3">
+                        <% if (record.title) { %>
+                            <input class="form-control" type="text" id="title" name="title" placeholder="Titre de l'enregistrement" value="<%= record.title %>">
+                        <% } else { %>
+                            <input class="form-control" type="text" id="title" name="title" placeholder="Titre de l'enregistrement">
+                        <% } %>
+                        <label for="title" class="mb-2">Titre de l'enregistrement</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <% if (record.title) { %>
+                            <textarea class="form-control" id="text" name="content" placeholder="Ecrivez ici"><%= record.content %></textarea>
+                        <% } else { %>
+                            <textarea class="form-control" id="text" name="content" placeholder="Ecrivez ici"></textarea>
+                        <% } %>
+                        <label for="text" class="mb-2">Racontez ce que vous avez fait aujourd'hui</label>
+                    </div>
+
+                    <hr>
+
+                    <div class="form-check form-switch">
+                        <% if (record.visibility) { %>
+                            <input name="visibility" class="form-check-input" type="checkbox" role="switch" id="visibility" checked>
+                        <% } else { %>
+                            <input name="visibility" class="form-check-input" type="checkbox" role="switch" id="visibility">
+                        <% } %>
+                        <label class="form-check-label" for="visibility">Rendre visible pour mes amis</label>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">Enregistrer</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -73,6 +73,32 @@ export function insertRecord(record) {
     });
 }
 
+export function updateRecord(record) {
+    const query = `
+        UPDATE records
+        SET visibility = ?, title = ?, content = ?, mood = ?, weather = ?
+        WHERE userid = ? AND date = ?
+    `;
+    const params = [
+        record.visibility,
+        record.title,
+        record.content,
+        record.mood,
+        record.weather,
+        record.userid,
+        record.date
+    ];
+    db.run(query, params, function(err) {
+        if (err) {
+            console.error('Update record error:', err);
+            return false;
+        } else {
+            console.log('Record updated successfully');
+            return true;
+        }
+    });
+}
+
 export function chechAuth(username, password) {
     return new Promise((resolve, reject) => {
         const query = `SELECT * FROM users WHERE username = ? AND password = ?`;
@@ -142,6 +168,19 @@ export function getRecords(username, limit = undefined) {
             });
         });
     }
+}
+
+export function getRecordByDate(username, date) {
+    const query = `SELECT * FROM records WHERE userid = (SELECT id FROM users WHERE username = ?) AND date = ?`;
+    return new Promise((resolve, reject) => {
+        db.get(query, [username, date], (err, row) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
 }
 
 export function deleteRecord(recordId) {

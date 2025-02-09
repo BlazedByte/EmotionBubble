@@ -22,11 +22,12 @@ npm start
 - [x] Ajouter un système de connexion
 - [x] Ajouter un système d'inscription
 - [x] Affichage des dates initiales : 30 derniers jours
-- [ ] Possiblilité de consulter un enregistrement
-- [ ] Possiblilité d'ajouter un enregistrement
-- [ ] Possibilité de modifier un enregistrement
+- [x] Possiblilité de consulter un enregistrement
+- [x] Possiblilité d'ajouter un enregistrement
+- [x] Possibilité de modifier un enregistrement
+- [ ] Ajouter un dark mode
 - [ ] Ajouter un système de partage de données entre utilisateurs (+ page amis) avec gestion de la visibilité des enregistrements
-- [ ] Ajouter une vue "calendrier" pour voir les émotions de chaque jour
 - [ ] Ajouter la page "profil"
 - [ ] Ajouter la page "administration"
+- [ ] Ajouter une vue "calendrier" pour voir les émotions de chaque jour
 - [ ] Ajouter un système de statistiques + page "statistiques"

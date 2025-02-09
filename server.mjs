@@ -147,6 +147,7 @@ app.get('/dashboard', async (req, res) => {
     if (req.session.username) {
         res.render('dashboard', {
             user: req.session,
+            todaysDate : getTodaysDate(),
             today : await getTodayRecord(req.session.username),
             jours : await getLastRecords(req.session.username)
         });
@@ -183,6 +184,136 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
+// Page de nouvel enregistrement
+app.get('/new', (req, res) => {
+    const dateR = req.query.date;
+    if (req.session.username) {
+        res.render('formrecord', {
+            error : null,
+            record : {
+                date : dateR,
+                mood : null,
+                weather : null,
+                visibility : 0,
+                title : null,
+                content : null
+            },
+        });
+    } else {
+        res.render('login', {
+            error : {
+                type : 'danger',
+                content : 'Vous devez être connecté pour accéder à cette page.'
+            }
+        });
+    }
+});
+
+app.get('/consulter', async (req, res) => {
+    const dateR = req.query.date;
+    if (req.session.username) {
+        const recordR = await database.getRecordByDate(req.session.username, dateR);
+        if (recordR) {
+            res.render('consultrecord', {
+                error : null,
+                record : recordR,
+            });
+        } else {
+            res.render('consultrecord', {
+                error : {
+                    type : 'warning',
+                    content : 'Aucun enregistrement pour cette date.'
+                },
+                record : {
+                    date : dateR,
+                    mood : null,
+                    weather : null,
+                    visibility : 0,
+                    title : null,
+                    content : null
+                },
+            });
+        }
+            
+    } else {
+        res.render('login', {
+            error : {
+                type : 'danger',
+                content : 'Vous devez être connecté pour accéder à cette page.'
+            }
+        });
+    }
+});
+
+app.get('/modif-record', async (req, res) => {
+    const dateR = req.query.date;
+    if (req.session.username) {
+        const recordR = await database.getRecordByDate(req.session.username, dateR);
+        if (recordR) {
+            res.render('formrecord', {
+                error : null,
+                record : recordR,
+            });
+        } else {
+            res.render('formrecord', {
+                error : {
+                    type : 'warning',
+                    content : 'Aucun enregistrement pour cette date.'
+                },
+                record : {
+                    date : dateR,
+                    mood : null,
+                    weather : null,
+                    visibility : 0,
+                    title : null,
+                    content : null
+                },
+            });
+        }
+            
+    } else {
+        res.render('login', {
+            error : {
+                type : 'danger',
+                content : 'Vous devez être connecté pour accéder à cette page.'
+            }
+        });
+    }
+});
+
+app.get('/delete-record', async (req, res) => {
+    const dateR = req.query.date;
+    if (req.session.username) {
+        const recordR = await database.getRecordByDate(req.session.username, dateR);
+        if (recordR) {
+            database.deleteRecord(recordR.id);
+            res.redirect('/dashboard');
+        } else {
+            res.render('consultrecord', {
+                error : {
+                    type : 'warning',
+                    content : 'Aucun enregistrement pour cette date.'
+                },
+                record : {
+                    date : dateR,
+                    mood : null,
+                    weather : null,
+                    visibility : 0,
+                    title : null,
+                    content : null
+                },
+            });
+        }
+            
+    } else {
+        res.render('login', {
+            error : {
+                type : 'danger',
+                content : 'Vous devez être connecté pour accéder à cette page.'
+            }
+        });
+    }
+});
 
 
 
@@ -199,6 +330,7 @@ app.post('/login-post', async (req, res) => {
         req.session.admin = auth.admin;
         req.session.name = auth.name;
         req.session.friends = auth.friends;
+        req.session.uid = auth.id;
         res.redirect('/dashboard');
     } else {
         res.render('login', {
@@ -246,6 +378,40 @@ app.post('/register-post', async (req, res) => {
             }
         });
     }
+});
+
+app.post('/modification-post',  async (req, res) => {
+    const date = req.body.date;
+    const mood = req.body.mood;
+    const weather = req.body.weather;
+    let visibility = req.body.visibility;
+    const title = req.body.title;
+    const content = req.body.content;
+    if (!visibility) {
+        visibility = 0;
+    } else {
+        visibility = 1;
+    }
+
+    const dateRecord = await database.getRecordByDate(req.session.username, req.body.date);
+
+    const record = {
+        userid : req.session.uid,
+        date : date,
+        mood : mood,
+        weather : weather,
+        visibility : visibility,
+        title : title,
+        content : content
+    }
+
+    if (dateRecord) {
+        database.updateRecord(record);
+    } else {
+        database.insertRecord(record);
+    }
+
+    res.redirect('/dashboard');
 });
 
 

@@ -68,7 +68,7 @@
             <div class="card-body text-center" style="background: linear-gradient(270deg, #f6d365 0%, #fda085 100%);">
                 <h1 class="card-title">Aujourd'hui</h1>
                 <img src="/static/assets/memo_3d.png" alt="" class="img-fluid mb-3" style="width: 42px;">
-                <p class="card-text">Vous n'avez encore rien enregistré pour aujourd'hui</p>
+                <a href="/new?date=<%= todaysDate %>" class="btn btn-outline-dark">Ajouter un enregistrement</a>
             </div>
         </div>
         <% } else { %>
@@ -102,10 +102,10 @@
         <div class="list-group">
             <% jours.forEach(jour => { %>
             <% if (!jour.mood) { %>
-            <div class="list-group-item d-flex align-items-center bg-light text-muted">
+            <a href="/consulter?date=<%= jour.date %>" class="list-group-item d-flex align-items-center bg-light text-muted">
                 <img src="/icons/memo_3d.png" alt="" class="img-fluid mr-3" style="width: 30px;">
                 <p class="mb-0">Pas d'enregistrement pour le <%= jour.date %></p>
-            </div>
+            </a>
             <% } else { %>
             <a href="/consulter?date=<%= jour.date %>" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                 <div>
