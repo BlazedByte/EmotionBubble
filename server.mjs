@@ -315,6 +315,41 @@ app.get('/delete-record', async (req, res) => {
     }
 });
 
+// Profil
+app.get('/profil', async (req, res) => {
+    if (req.session.username) {
+        res.render('profile', {
+            error : null,
+            user: req.session
+        });
+    } else {
+        res.render('login', {
+            error : {
+                type : 'danger',
+                content : 'Vous devez être connecté pour accéder à cette page.'
+            }
+        });
+    }
+});
+
+// Administration
+app.get('/admin', async (req, res) => {
+    if (req.session.admin) {
+        res.render('admin', {
+            error: null,
+        });
+    } else {
+        res.render('login', {
+            error : {
+                type : 'info',
+                content : 'Vous devez être administrateur pour accéder à cette page.'
+            }
+        });
+    }
+});
+
+
+
 
 
 // Login POST
