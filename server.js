@@ -4,7 +4,9 @@ import crypto from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import * as database from './database.mjs';
+import * as database from './modules/database.js';
+import { ERROR_MESSAGES } from './modules/errors.js';
+import { tosha256, getTodaysDate, dateDelta } from './modules/tools.js';
 
 const PORT = 80;
 const IP = '127.0.0.1'
@@ -29,88 +31,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-const ERROR_MESSAGES = {
-    ADMIN_ONLY : {
-        type : 'info',
-        content : 'Vous devez être administrateur pour accéder à cette page.'
-    },
-
-    NO_RECORD_FOR_DATE : {
-        type : 'warning',
-        content : 'Aucun enregistrement pour cette date.'
-    },
-
-    NOT_LOGGED : {
-        type : 'danger',
-        content : 'Vous devez être connecté pour accéder à cette page.'
-    },
-    PWDS_NOT_MATCH : {
-        type : 'danger',
-        content : 'Les mots de passes ne correspondent pas.'
-    },
-    AUTH_FAILED : {
-        type : 'danger',
-        content : 'Les informations saisies sont incorrectes.'
-    },
-    MISSING_FIELDS : {
-        type : 'danger',
-        content : 'Veuillez remplir tous les champs.'
-    },
-    USERNAME_USED : {
-        type : 'danger',
-        content : 'Ce nom d\'utilisateur est déjà utilisé.'
-    }
-}
-
-
-
-
-function tosha256(data) {
-    return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-function getTodaysDate() {
-    let date = new Date();
-    let day = date.getDate();
-    let month = date.getMonth() + 1;
-    let year = date.getFullYear();
-    if (month < 10) {
-        month = `0${month}`;
-    }
-    if (day < 10) {
-        day = `0${day}`;
-    }
-    return `${year}-${month}-${day}`;
-}
-
-function dateDelta(date, deltaJours) {
-    let dateObj = new Date(date);
-    dateObj.setDate(dateObj.getDate() + deltaJours);
-    let day = dateObj.getDate();
-    let month = dateObj.getMonth() + 1;
-    let year = dateObj.getFullYear();
-    if (month < 10) {
-        month = `0${month}`;
-    }
-    if (day < 10) {
-        day = `0${day}`;
-    }
-    return `${year}-${month}-${day}`;
-}
-
-async function authenticateUser(username, passwordHash) {
-    let user = await database.chechAuth(username, passwordHash);
-    return user;
-}
-
-async function getUser(username) {
-    let user = await database.getUser(username);
-    return user;
-}
 
 async function registrationUser(user) {
 
-    let user_get = await getUser(user.username);
+    let user_get = await database.getUser(user.username);
 
     if (user_get) {
         return false;
@@ -356,7 +280,7 @@ app.post('/login-post', async (req, res) => {
     const password = req.body.password;
     const hash = tosha256(password);
 
-    const auth = await authenticateUser(username, hash);
+    const auth = await database.chechAuth(username, hash);
 
     if (auth) {
         req.session.username = auth.username;
@@ -462,7 +386,7 @@ app.post('/update-profile-post', async (req, res) => {
     const name = req.body.name;
 
     if (username && username != req.session.username) {
-        const u = await getUser(username);
+        const u = await database.getUser(username);
         if (u) {
             req.session.error = ERROR_MESSAGES.USERNAME_USED;
             res.redirect('/profil');
@@ -477,6 +401,7 @@ app.post('/update-profile-post', async (req, res) => {
 
     database.updateUser(req.session.uid, req.session.username, req.session.name);
 
+    req.session.error = ERROR_MESSAGES.PROFILE_UPDATED;
     res.redirect('/profil');
 });
 
@@ -501,6 +426,9 @@ app.post('/update-profile-password-post', (req, res) => {
     const hash = tosha256(password);
 
     database.updateUserPwd(req.session.uid, hash);
+
+    req.session.error = ERROR_MESSAGES.PASSWORD_UPDATED;
+    res.redirect('/profil');
 });
 
 
