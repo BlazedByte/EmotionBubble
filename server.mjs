@@ -209,6 +209,7 @@ app.get('/new', (req, res) => {
     }
 });
 
+// Page de consultation
 app.get('/consulter', async (req, res) => {
     const dateR = req.query.date;
     if (req.session.username) {
@@ -245,6 +246,7 @@ app.get('/consulter', async (req, res) => {
     }
 });
 
+// Modification d'enregistrement
 app.get('/modif-record', async (req, res) => {
     const dateR = req.query.date;
     if (req.session.username) {
@@ -281,6 +283,7 @@ app.get('/modif-record', async (req, res) => {
     }
 });
 
+// Suppression d'enregistrement
 app.get('/delete-record', async (req, res) => {
     const dateR = req.query.date;
     if (req.session.username) {
@@ -395,6 +398,16 @@ app.post('/register-post', async (req, res) => {
         return;
     }
 
+    if (username == '' || name == '' || password == '') {
+        res.render('register', {
+            error : {
+                type : 'danger',
+                content : 'Veuillez remplir tous les champs.'
+            }
+        });
+        return;
+    }
+
     const reg = await registrationUser({
         username: username,
         name: name,
@@ -415,6 +428,7 @@ app.post('/register-post', async (req, res) => {
     }
 });
 
+// Modification / Création POST
 app.post('/modification-post',  async (req, res) => {
     const date = req.body.date;
     const mood = req.body.mood;
@@ -449,6 +463,55 @@ app.post('/modification-post',  async (req, res) => {
     res.redirect('/dashboard');
 });
 
+// Modification du profil POST
+app.post('/update-profile-post', async (req, res) => {
+    const username = req.body.username;
+    const name = req.body.name;
+
+    if (username && username != req.session.username) {
+        const u = await getUser(username);
+        if (u) {
+            res.render('profile', {
+                error : {
+                    type : 'danger',
+                    content : 'Ce nom d\'utilisateur est déjà utilisé.'
+                },
+                user: req.session
+            });
+            return;
+        } else {
+            req.session.username = username;
+        }
+    }
+    if (name && name != req.session.name) {
+        req.session.name = name;
+    }
+
+    database.updateUser(req.session.uid, req.session.username, req.session.name);
+
+    res.redirect('/profil');
+});
+
+// Modification du mdp POST
+app.post('/update-profile-password-post', (req, res) => {
+    const password = req.body.password;
+    const password2 = req.body.passwordrepeat;
+
+    if (password != password2) {
+        res.render('profile', {
+            error : {
+                type : 'danger',
+                content : 'Les mots de passes ne correspondent pas.'
+            },
+            user: req.session
+        });
+        return;
+    }
+
+    const hash = tosha256(password);
+
+    database.updateUserPwd(req.session.uid, hash);
+});
 
 
 app.use((req, res) => {

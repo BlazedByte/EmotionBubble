@@ -10,6 +10,8 @@ const db = new sqlite3.Database('./db/database.db', (err) => {
     }
 });
 
+// Table users
+
 export function getUsers() {
     return new Promise((resolve, reject) => {
         db.all('SELECT * FROM users', (err, rows) => {
@@ -47,6 +49,79 @@ export function insertUser(user) {
         }
     });
 }
+
+export function getUser(username) {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT * FROM users WHERE username = ?`;
+        db.get(query, [username], (err, row) => {
+            if (err) {
+                reject(err);
+            } else {
+                if (row) {
+                    row.friends = JSON.parse(row.friends);
+                }
+                resolve(row);
+            }
+        });
+    });
+}
+
+export function chechAuth(username, password) {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT * FROM users WHERE username = ? AND password = ?`;
+        db.get(query, [username, password], (err, row) => {
+            if (err) {
+                reject(err);
+            } else {
+                if (row) {
+                    row.friends = JSON.parse(row.friends);
+                }
+                resolve(row);
+            }
+        });
+    });
+}
+
+export function deleteUser(userId) {
+    return new Promise((resolve, reject) => {
+        const query = `DELETE FROM users WHERE id = ?`;
+        db.run(query, [userId], (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
+export function updateUser(uid, new_username, new_name) {
+    return new Promise((resolve, reject) => {
+        const query = `UPDATE users SET username = ?, name = ? WHERE id = ?`;
+        db.run(query, [new_username, new_name, uid], (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
+export function updateUserPwd(uid, new_pwd) {
+    return new Promise((resolve, reject) => {
+        const query = `UPDATE users SET password = ? WHERE id = ?`;
+        db.run(query, [new_pwd, uid], (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
+// Table records
 
 export function insertRecord(record) {
     const query = `
@@ -96,51 +171,6 @@ export function updateRecord(record) {
             console.log('Record updated successfully');
             return true;
         }
-    });
-}
-
-export function chechAuth(username, password) {
-    return new Promise((resolve, reject) => {
-        const query = `SELECT * FROM users WHERE username = ? AND password = ?`;
-        db.get(query, [username, password], (err, row) => {
-            if (err) {
-                reject(err);
-            } else {
-                if (row) {
-                    row.friends = JSON.parse(row.friends);
-                }
-                resolve(row);
-            }
-        });
-    });
-}
-
-export function getUser(username) {
-    return new Promise((resolve, reject) => {
-        const query = `SELECT * FROM users WHERE username = ?`;
-        db.get(query, [username], (err, row) => {
-            if (err) {
-                reject(err);
-            } else {
-                if (row) {
-                    row.friends = JSON.parse(row.friends);
-                }
-                resolve(row);
-            }
-        });
-    });
-}
-
-export function deleteUser(userId) {
-    return new Promise((resolve, reject) => {
-        const query = `DELETE FROM users WHERE id = ?`;
-        db.run(query, [userId], (err) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve();
-            }
-        });
     });
 }
 
