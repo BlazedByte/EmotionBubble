@@ -25,10 +25,10 @@ npm start
 - [x] Possiblilité de consulter un enregistrement
 - [x] Possiblilité d'ajouter un enregistrement
 - [x] Possibilité de modifier un enregistrement
-- [ ] Vérifier la connexion pour chaque page nécessitant une connexion
-- [ ] Ajouter un dark mode
-- [ ] Ajouter un système de partage de données entre utilisateurs (+ page amis) avec gestion de la visibilité des enregistrements
+- [x] Vérifier la connexion pour chaque page nécessitant une connexion
 - [x] Ajouter la page "profil"
 - [x] Ajouter la page "administration"
+- [ ] Ajouter un dark mode
+- [ ] Ajouter un système de partage de données entre utilisateurs (+ page amis) avec gestion de la visibilité des enregistrements
 - [ ] Ajouter une vue "calendrier" pour voir les émotions de chaque jour
 - [ ] Ajouter un système de statistiques + page "statistiques"

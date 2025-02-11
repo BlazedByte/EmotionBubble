@@ -29,6 +29,42 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
+const ERROR_MESSAGES = {
+    ADMIN_ONLY : {
+        type : 'info',
+        content : 'Vous devez être administrateur pour accéder à cette page.'
+    },
+
+    NO_RECORD_FOR_DATE : {
+        type : 'warning',
+        content : 'Aucun enregistrement pour cette date.'
+    },
+
+    NOT_LOGGED : {
+        type : 'danger',
+        content : 'Vous devez être connecté pour accéder à cette page.'
+    },
+    PWDS_NOT_MATCH : {
+        type : 'danger',
+        content : 'Les mots de passes ne correspondent pas.'
+    },
+    AUTH_FAILED : {
+        type : 'danger',
+        content : 'Les informations saisies sont incorrectes.'
+    },
+    MISSING_FIELDS : {
+        type : 'danger',
+        content : 'Veuillez remplir tous les champs.'
+    },
+    USERNAME_USED : {
+        type : 'danger',
+        content : 'Ce nom d\'utilisateur est déjà utilisé.'
+    }
+}
+
+
+
+
 function tosha256(data) {
     return crypto.createHash('sha256').update(data).digest('hex');
 }
@@ -134,51 +170,51 @@ app.get('/', (req, res) => {
 
 // Page de login
 app.get('/login', (req, res) => {
-    res.render('login', { error : null });
+    const error = req.session.error;
+    req.session.error = null;
+    res.render('login', { error : error });
 });
 
 // Page de register
 app.get('/register', (req, res) => {
-    res.render('register', { error : null });
+    const error = req.session.error;
+    req.session.error = null;
+    res.render('register', { error : error });
 });
 
 // Dashboard
 app.get('/dashboard', async (req, res) => {
-    if (req.session.username) {
-        res.render('dashboard', {
-            user: req.session,
-            todaysDate : getTodaysDate(),
-            today : await getTodayRecord(req.session.username),
-            jours : await getLastRecords(req.session.username)
-        });
-    } else {
-        res.render('login', {
-            error : {
-                type : 'danger',
-                content : 'Vous devez être connecté pour accéder à cette page.'
-            }
-        });
+
+    if (!req.session.username) {
+        req.session.error = ERROR_MESSAGES.NOT_LOGGED;
+        res.redirect('/login');
+        return;
     }
+
+    res.render('dashboard', {
+        user: req.session,
+        todaysDate : getTodaysDate(),
+        today : await getTodayRecord(req.session.username),
+        jours : await getLastRecords(req.session.username)
+    });
 });
 
 // Historique
 app.get('/historique', async (req, res) => {
-    if (req.session.username) {
-        res.render('history', {
-            user: req.session,
-            jours : await getAllRecords(req.session.username)
-        });
-    } else {
-        res.render('login', {
-            error : {
-                type : 'danger',
-                content : 'Vous devez être connecté pour accéder à cette page.'
-            }
-        });
+
+    if (!req.session.username) {
+        req.session.error = ERROR_MESSAGES.NOT_LOGGED;
+        res.redirect('/login');
+        return;
     }
+
+    res.render('history', {
+        user: req.session,
+        jours : await getAllRecords(req.session.username)
+    });
 });
 
-// Page de login
+// Gestion du logout
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
@@ -186,10 +222,46 @@ app.get('/logout', (req, res) => {
 
 // Page de nouvel enregistrement
 app.get('/new', (req, res) => {
+
+    if (!req.session.username) {
+        req.session.error = ERROR_MESSAGES.NOT_LOGGED;
+        res.redirect('/login');
+        return;
+    }
+
     const dateR = req.query.date;
-    if (req.session.username) {
-        res.render('formrecord', {
+    res.render('formrecord', {
+        error : null,
+        record : {
+            date : dateR,
+            mood : null,
+            weather : null,
+            visibility : 0,
+            title : null,
+            content : null
+        },
+    });
+});
+
+// Page de consultation
+app.get('/consulter', async (req, res) => {
+
+    if (!req.session.username) {
+        req.session.error = ERROR_MESSAGES.NOT_LOGGED;
+        res.redirect('/login');
+        return;
+    }
+
+    const dateR = req.query.date;
+    const recordR = await database.getRecordByDate(req.session.username, dateR);
+    if (recordR) {
+        res.render('consultrecord', {
             error : null,
+            record : recordR,
+        });
+    } else {
+        res.render('consultrecord', {
+            error : ERROR_MESSAGES.NO_RECORD_FOR_DATE,
             record : {
                 date : dateR,
                 mood : null,
@@ -199,156 +271,79 @@ app.get('/new', (req, res) => {
                 content : null
             },
         });
-    } else {
-        res.render('login', {
-            error : {
-                type : 'danger',
-                content : 'Vous devez être connecté pour accéder à cette page.'
-            }
-        });
-    }
-});
-
-// Page de consultation
-app.get('/consulter', async (req, res) => {
-    const dateR = req.query.date;
-    if (req.session.username) {
-        const recordR = await database.getRecordByDate(req.session.username, dateR);
-        if (recordR) {
-            res.render('consultrecord', {
-                error : null,
-                record : recordR,
-            });
-        } else {
-            res.render('consultrecord', {
-                error : {
-                    type : 'warning',
-                    content : 'Aucun enregistrement pour cette date.'
-                },
-                record : {
-                    date : dateR,
-                    mood : null,
-                    weather : null,
-                    visibility : 0,
-                    title : null,
-                    content : null
-                },
-            });
-        }
-            
-    } else {
-        res.render('login', {
-            error : {
-                type : 'danger',
-                content : 'Vous devez être connecté pour accéder à cette page.'
-            }
-        });
     }
 });
 
 // Modification d'enregistrement
 app.get('/modif-record', async (req, res) => {
+
+    if (!req.session.username) {
+        req.session.error = ERROR_MESSAGES.NOT_LOGGED;
+        res.redirect('/login');
+        return;
+    }
+
     const dateR = req.query.date;
-    if (req.session.username) {
-        const recordR = await database.getRecordByDate(req.session.username, dateR);
-        if (recordR) {
-            res.render('formrecord', {
-                error : null,
-                record : recordR,
-            });
-        } else {
-            res.render('formrecord', {
-                error : {
-                    type : 'warning',
-                    content : 'Aucun enregistrement pour cette date.'
-                },
-                record : {
-                    date : dateR,
-                    mood : null,
-                    weather : null,
-                    visibility : 0,
-                    title : null,
-                    content : null
-                },
-            });
-        }
-            
-    } else {
-        res.render('login', {
-            error : {
-                type : 'danger',
-                content : 'Vous devez être connecté pour accéder à cette page.'
-            }
+    const recordR = await database.getRecordByDate(req.session.username, dateR);
+    if (recordR) {
+        res.render('formrecord', {
+            error : null,
+            record : recordR,
         });
+    } else {
+        res.redirect('/new?date=' + dateR);
     }
 });
 
 // Suppression d'enregistrement
 app.get('/delete-record', async (req, res) => {
+
+    if (!req.session.username) {
+        req.session.error = ERROR_MESSAGES.NOT_LOGGED;
+        res.redirect('/login');
+        return;
+    }
+
     const dateR = req.query.date;
-    if (req.session.username) {
-        const recordR = await database.getRecordByDate(req.session.username, dateR);
-        if (recordR) {
-            database.deleteRecord(recordR.id);
-            res.redirect('/dashboard');
-        } else {
-            res.render('consultrecord', {
-                error : {
-                    type : 'warning',
-                    content : 'Aucun enregistrement pour cette date.'
-                },
-                record : {
-                    date : dateR,
-                    mood : null,
-                    weather : null,
-                    visibility : 0,
-                    title : null,
-                    content : null
-                },
-            });
-        }
-            
+    const recordR = await database.getRecordByDate(req.session.username, dateR);
+    if (recordR) {
+        database.deleteRecord(recordR.id);
+        res.redirect('/dashboard');
     } else {
-        res.render('login', {
-            error : {
-                type : 'danger',
-                content : 'Vous devez être connecté pour accéder à cette page.'
-            }
-        });
+        res.redirect('/consulter?date=' + dateR);
     }
 });
 
 // Profil
 app.get('/profil', async (req, res) => {
-    if (req.session.username) {
-        res.render('profile', {
-            error : null,
-            user: req.session
-        });
-    } else {
-        res.render('login', {
-            error : {
-                type : 'danger',
-                content : 'Vous devez être connecté pour accéder à cette page.'
-            }
-        });
+
+    if (!req.session.username) {
+        req.session.error = ERROR_MESSAGES.NOT_LOGGED;
+        res.redirect('/login');
+        return;
     }
+
+    const error = req.session.error;
+    req.session.error = null;
+    
+    res.render('profile', {
+        error : error,
+        user: req.session
+    });
 });
 
 // Administration
 app.get('/admin', async (req, res) => {
-    if (req.session.admin) {
-        res.render('admin', {
-            error: null,
-        });
-    } else {
-        res.render('login', {
-            error : {
-                type : 'info',
-                content : 'Vous devez être administrateur pour accéder à cette page.'
-            }
-        });
+
+    if (!req.session.admin) {
+        req.session.error = ERROR_MESSAGES.ADMIN_ONLY;
+        res.redirect('/login');
+        return;
     }
+
+    res.render('admin', {
+        error: null,
+    });
 });
 
 
@@ -371,12 +366,8 @@ app.post('/login-post', async (req, res) => {
         req.session.uid = auth.id;
         res.redirect('/dashboard');
     } else {
-        res.render('login', {
-            error : {
-                type : 'danger',
-                content : 'Les informations saisies sont incorrectes.'
-            }
-        });
+        req.session.error = ERROR_MESSAGES.AUTH_FAILED;
+        res.redirect('/login');
     }
 });
 
@@ -389,22 +380,14 @@ app.post('/register-post', async (req, res) => {
     const hash = tosha256(password);
 
     if (password != password2) {
-        res.render('register', {
-            error : {
-                type : 'danger',
-                content : 'Les mots de passes ne correspondent pas.'
-            }
-        });
+        req.session.error = ERROR_MESSAGES.PWDS_NOT_MATCH;
+        res.redirect('/register');
         return;
     }
 
     if (username == '' || name == '' || password == '') {
-        res.render('register', {
-            error : {
-                type : 'danger',
-                content : 'Veuillez remplir tous les champs.'
-            }
-        });
+        req.session.error = ERROR_MESSAGES.MISSING_FIELDS;
+        res.redirect('/register');
         return;
     }
 
@@ -419,17 +402,20 @@ app.post('/register-post', async (req, res) => {
     if (reg) {
         res.redirect('/login');
     } else {
-        res.render('register', {
-            error : {
-                type : 'danger',
-                content : 'Ce nom d\'utilisateur est déjà utilisé.'
-            }
-        });
+        req.session.error = ERROR_MESSAGES.USERNAME_USED;
+        res.redirect('/register');
     }
 });
 
 // Modification / Création POST
 app.post('/modification-post',  async (req, res) => {
+
+    if (!req.session.username) {
+        req.session.error = ERROR_MESSAGES.NOT_LOGGED;
+        res.redirect('/login');
+        return;
+    }
+
     const date = req.body.date;
     const mood = req.body.mood;
     const weather = req.body.weather;
@@ -465,19 +451,21 @@ app.post('/modification-post',  async (req, res) => {
 
 // Modification du profil POST
 app.post('/update-profile-post', async (req, res) => {
+
+    if (!req.session.username) {
+        req.session.error = ERROR_MESSAGES.NOT_LOGGED;
+        res.redirect('/login');
+        return;
+    }
+
     const username = req.body.username;
     const name = req.body.name;
 
     if (username && username != req.session.username) {
         const u = await getUser(username);
         if (u) {
-            res.render('profile', {
-                error : {
-                    type : 'danger',
-                    content : 'Ce nom d\'utilisateur est déjà utilisé.'
-                },
-                user: req.session
-            });
+            req.session.error = ERROR_MESSAGES.USERNAME_USED;
+            res.redirect('/profil');
             return;
         } else {
             req.session.username = username;
@@ -494,17 +482,19 @@ app.post('/update-profile-post', async (req, res) => {
 
 // Modification du mdp POST
 app.post('/update-profile-password-post', (req, res) => {
+
+    if (!req.session.username) {
+        req.session.error = ERROR_MESSAGES.NOT_LOGGED;
+        res.redirect('/login');
+        return;
+    }
+
     const password = req.body.password;
     const password2 = req.body.passwordrepeat;
 
     if (password != password2) {
-        res.render('profile', {
-            error : {
-                type : 'danger',
-                content : 'Les mots de passes ne correspondent pas.'
-            },
-            user: req.session
-        });
+        req.session.error = ERROR_MESSAGES.PWDS_NOT_MATCH;
+        res.redirect('/profil');
         return;
     }
 
