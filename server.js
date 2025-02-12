@@ -85,6 +85,43 @@ async function getAllRecords(username) {
     return records;
 }
 
+async function getFriends(user) {
+    const uid = user.uid;
+    const realFriends = [];
+    for (let fid of user.friends) {
+        const friend = await database.getUserById(fid);
+        if (!friend) {
+            user.friends = user.friends.filter((f) => f != fid);
+        }
+        if (friend.friends.includes(uid)) {
+            realFriends.push({
+                uid: fid,
+                name: friend.name,
+                username: friend.username
+            });
+        }
+    }
+    return realFriends;
+}
+
+async function getFriendRequests(user) {
+    const uid = user.uid;
+    const friendRequests = [];
+    for (let fid of user.friends) {
+        const friend = await database.getUserById(fid);
+        if (!friend) {
+            user.friends = user.friends.filter((f) => f != fid);
+        }
+        if (!friend.friends.includes(uid)) {
+            friendRequests.push({
+                uid: fid,
+                username: friend.username
+            });
+        }
+    }
+    return friendRequests;
+}
+
 
 
 // Page d'accueil
@@ -134,6 +171,7 @@ app.get('/historique', async (req, res) => {
 
     res.render('history', {
         user: req.session,
+        friend : null,
         jours : await getAllRecords(req.session.username)
     });
 });
@@ -252,7 +290,9 @@ app.get('/profil', async (req, res) => {
     
     res.render('profile', {
         error : error,
-        user: req.session
+        user: req.session,
+        friends : await getFriends(req.session),
+        friendRequests : await getFriendRequests(req.session)
     });
 });
 
@@ -268,6 +308,43 @@ app.get('/admin', async (req, res) => {
     res.render('admin', {
         error: null,
     });
+});
+
+// Page d'ami
+app.get('/ami', async (req, res) => {
+
+    if (!req.session.username) {
+        req.session.error = ERROR_MESSAGES.NOT_LOGGED;
+        res.redirect('/login');
+        return;
+    }
+
+    const friend = await database.getUser(req.query.username);
+
+    res.render('history', {
+        user: req.session,
+        friend : friend,
+        jours : (await getAllRecords(req.query.username)).filter((r) => r.visibility == 1)
+    });
+});
+
+// Suppression d'ami
+app.get('/delete-friend', async (req, res) => {
+
+    if (!req.session.username) {
+        req.session.error = ERROR_MESSAGES.NOT_LOGGED;
+        res.redirect('/login');
+        return;
+    }
+
+    const friend_username = req.query.username;
+    const friend = await database.getUser(friend_username);
+    const friend_id = friend.id;
+    await database.deleteFriend(req.session.uid, friend_id);
+
+    req.session.friends = req.session.friends.filter((f) => f != friend_id);
+    req.session.error = ERROR_MESSAGES.FRIEND_DELETED;
+    res.redirect('/profil');
 });
 
 
@@ -428,6 +505,25 @@ app.post('/update-profile-password-post', (req, res) => {
     database.updateUserPwd(req.session.uid, hash);
 
     req.session.error = ERROR_MESSAGES.PASSWORD_UPDATED;
+    res.redirect('/profil');
+});
+
+// Ajout d'ami POST
+app.post('/add-friend-post', async (req, res) => {
+
+    if (!req.session.username) {
+        req.session.error = ERROR_MESSAGES.NOT_LOGGED;
+        res.redirect('/login');
+        return;
+    }
+
+    const friend_username = req.body.username;
+    const friend = await database.getUser(friend_username);
+    const friend_id = friend.id;
+    await database.addFriend(req.session.uid, friend_id);
+
+    req.session.friends.push(friend_id);
+    req.session.error = ERROR_MESSAGES.FRIEND_ADDED;
     res.redirect('/profil');
 });
 

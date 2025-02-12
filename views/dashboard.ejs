@@ -19,7 +19,7 @@
         <nav>
             <ul class="list-unstyled d-flex mb-0">
                 <li class="ml-3 dropdown">
-                    <a href="#" id="burgerMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a href="#" id="burgerMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false" class="dropdown-toggle d-flex align-items-center text-decoration-none text-dark">
                         <img src="/icons/report-columns.svg" alt="Bouton direction menu" class="img-fluid" style="width: 30px;">
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="burgerMenu">
@@ -38,7 +38,7 @@
                         <li>
                             <a class="dropdown-item d-flex align-items-center" href="/profil">
                                 <img src="/icons/profile-circle.svg" alt="Profil" class="img-fluid me-2" style="width: 20px;">
-                                Profil
+                                Profil & Amis
                             </a>
                         </li>
                         <% if (user.admin) { %>

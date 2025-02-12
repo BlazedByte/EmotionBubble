@@ -7,6 +7,10 @@ export const ERROR_MESSAGES = {
         type : 'success',
         content : 'Mot de passe mis à jour.'
     },
+    FRIEND_ADDED : {
+        type : 'success',
+        content : 'Demande d\'ami ajouté à votre liste, vous serrez amis dès que l\'utilisateur vous demandera en retour.'
+    },
 
     ADMIN_ONLY : {
         type : 'info',
@@ -16,6 +20,10 @@ export const ERROR_MESSAGES = {
     NO_RECORD_FOR_DATE : {
         type : 'warning',
         content : 'Aucun enregistrement pour cette date.'
+    },
+    FRIEND_DELETED : {
+        type : 'warning',
+        content : 'Ami supprimé.'
     },
 
     NOT_LOGGED : {

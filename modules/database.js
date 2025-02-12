@@ -16,6 +16,7 @@ export function getUsers() {
     return new Promise((resolve, reject) => {
         db.all('SELECT * FROM users', (err, rows) => {
             if (err) {
+                console.error('Get users error: ', err);
                 reject(err);
             } else {
                 rows.forEach(element => {
@@ -44,7 +45,6 @@ export function insertUser(user) {
             console.error('Insert user error: ', err);
             return false;
         } else {
-            console.log('User inserted successfully');
             return true;
         }
     });
@@ -55,6 +55,24 @@ export function getUser(username) {
         const query = `SELECT * FROM users WHERE username = ?`;
         db.get(query, [username], (err, row) => {
             if (err) {
+                console.error('Get user error: ', err);
+                reject(err);
+            } else {
+                if (row) {
+                    row.friends = JSON.parse(row.friends);
+                }
+                resolve(row);
+            }
+        });
+    });
+}
+
+export function getUserById(uid) {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT * FROM users WHERE id = ?`;
+        db.get(query, [uid], (err, row) => {
+            if (err) {
+                console.error('Get user by id error: ', err);
                 reject(err);
             } else {
                 if (row) {
@@ -71,6 +89,7 @@ export function chechAuth(username, password) {
         const query = `SELECT * FROM users WHERE username = ? AND password = ?`;
         db.get(query, [username, password], (err, row) => {
             if (err) {
+                console.error('Check auth error: ', err);
                 reject(err);
             } else {
                 if (row) {
@@ -87,6 +106,7 @@ export function deleteUser(userId) {
         const query = `DELETE FROM users WHERE id = ?`;
         db.run(query, [userId], (err) => {
             if (err) {
+                console.error('Delete user error: ', err);
                 reject(err);
             } else {
                 resolve();
@@ -100,6 +120,7 @@ export function updateUser(uid, new_username, new_name) {
         const query = `UPDATE users SET username = ?, name = ? WHERE id = ?`;
         db.run(query, [new_username, new_name, uid], (err) => {
             if (err) {
+                console.error('Update user error: ', err);
                 reject(err);
             } else {
                 resolve();
@@ -113,12 +134,55 @@ export function updateUserPwd(uid, new_pwd) {
         const query = `UPDATE users SET password = ? WHERE id = ?`;
         db.run(query, [new_pwd, uid], (err) => {
             if (err) {
+                console.error('Update user password error: ', err);
                 reject(err);
             } else {
                 resolve();
             }
         });
     });
+}
+
+export async function addFriend(uid, friendId) {
+    const user = await getUserById(uid);
+    const userFriends = user.friends;
+
+    if (userFriends.includes(friendId)) {
+        console.error('Add friend error: friend already in list');
+        return false;
+    } else {
+        userFriends.push(friendId);
+        const query = `UPDATE users SET friends = ? WHERE id = ?`;
+        db.run(query, [JSON.stringify(userFriends), uid], (err) => {
+            if (err) {
+                console.error('Add friend error:', err);
+                return false;
+            } else {
+                return true;
+            }
+        });
+    }
+}
+
+export async function deleteFriend(uid, friendId) {
+    const user = await getUserById(uid);
+    const userFriends = user.friends;
+
+    if (userFriends.includes(friendId)) {
+        userFriends.splice(userFriends.indexOf(friendId), 1);
+        const query = `UPDATE users SET friends = ? WHERE id = ?`;
+        db.run(query, [JSON.stringify(userFriends), uid], (err) => {
+            if (err) {
+                console.error('Delete friend error:', err);
+                return false;
+            } else {
+                return true;
+            }
+        });
+    } else {
+        console.error('Delete friend error: friend not found');
+        return false;
+    }
 }
 
 // Table records
@@ -142,7 +206,6 @@ export function insertRecord(record) {
             console.error('Insert record error:', err);
             return false;
         } else {
-            console.log('Record inserted successfully');
             return true;
         }
     });
@@ -168,7 +231,6 @@ export function updateRecord(record) {
             console.error('Update record error:', err);
             return false;
         } else {
-            console.log('Record updated successfully');
             return true;
         }
     });
@@ -180,6 +242,7 @@ export function getRecords(username, limit = undefined) {
         return new Promise((resolve, reject) => {
             db.all(baseQuery, [username], (err, rows) => {
                 if (err) {
+                    console.error('Get records error:', err);
                     reject(err);
                 } else {
                     resolve(rows);
@@ -191,6 +254,7 @@ export function getRecords(username, limit = undefined) {
             const query = `${baseQuery} LIMIT ?`;
             db.all(query, [username, limit], (err, rows) => {
                 if (err) {
+                    console.error('Get records error:', err);
                     reject(err);
                 } else {
                     resolve(rows);
@@ -205,6 +269,7 @@ export function getRecordByDate(username, date) {
     return new Promise((resolve, reject) => {
         db.get(query, [username, date], (err, row) => {
             if (err) {
+                console.error('Get record by date error:', err);
                 reject(err);
             } else {
                 resolve(row);
@@ -218,6 +283,7 @@ export function deleteRecord(recordId) {
         const query = `DELETE FROM records WHERE id = ?`;
         db.run(query, [recordId], (err) => {
             if (err) {
+                console.error('Delete record error:', err);
                 reject(err);
             } else {
                 resolve();
