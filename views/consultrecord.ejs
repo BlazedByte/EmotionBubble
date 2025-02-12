@@ -8,7 +8,7 @@
 <body>
     <div>
         <div class="container my-5">
-            <div class="card shadow-lg">
+            <div class="card shadow-lg mb-3">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <h1 class="card-title text-center mb-4">Enregistrement du <%= record.date %></h1>
@@ -43,7 +43,7 @@
                         <% if (record.title || record.content) { %>
                         <div class="card-body">
                             <h2 class="card-title"><%= record.title %></h2>
-                            <p class="card-text"><%= record.content %></p>
+                            <pre class="card-text"><%= record.content %></pre>
                         </div>
                         <% } %>
                         <hr>
@@ -76,6 +76,55 @@
 
                     <% } else { %>
                         <a href="/new?date=<%= record.date %>" class="btn btn-outline-dark">Ajouter un enregistrement</a>
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <h1 class="card-title text-center mb-4">Enregistrement de mes amis</h1>
+                    </div>
+                    <% if (friendsRecords.length === 0) { %>
+                    <div class="alert alert-info" role="alert">
+                        Vos amis n'ont rien enregistré pour le <%= record.date %>.
+                    </div>
+                    <% } else { %>
+                        
+                    <% for (let friendRec of friendsRecords) { %>
+
+                    <% let record =  friendRec.record %>
+
+                    <div class="card mb-3">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <div class="me-2">
+                                    <img src="/faces/<%= record.mood %>.png" alt="Image ressenti de l'enregistrement" class="img-fluid rounded mr-2" style="width: 42px;">
+                                    <img src="/weather/<%= record.weather %>.png" alt="Image météo de l'enregistrement" class="img-fluid rounded" style="width: 42px;">
+                                </div>
+                                <div class="d-flex flex-column align-items-center justify-content-center">
+                                    <h4 class="mb-0"><%= friendRec.name %></h4>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <p class="mb-0 me-2"><%= record.date %></p>
+                                <% if (record.visibility) { %>
+                                    <img src="/icons/eye.svg" alt="Oeil" class="img-fluid me-2" style="width: 20px;">
+                                <% } else { %>
+                                    <img src="/icons/eye-closed.svg" alt="Oeil fermé" class="img-fluid me-2" style="width: 20px;">
+                                <% } %>
+                            </div>
+                        </div>
+                        <% if (record.title || record.content) { %>
+                        <div class="card-body">
+                            <h2 class="card-title"><%= record.title %></h2>
+                            <pre class="card-text"><%= record.content %></pre>
+                        </div>
+                        <% } %>
+                    </div>
+
+                    <% } %>
+
                     <% } %>
                 </div>
             </div>

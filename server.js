@@ -122,6 +122,27 @@ async function getFriendRequests(user) {
     return friendRequests;
 }
 
+async function getFriendsRecords(friendsArray, date) {
+    const friendsRecords = [];
+    for (let f of friendsArray) {
+        const idOfFriend = f.uid;
+        const friend = await database.getUserById(idOfFriend);
+        if (!friend) {
+            user.friends = user.friends.filter((f) => f != idOfFriend);
+        }
+        const record = await database.getRecordByDate(friend.username, date);
+        if (record && record.visibility == 1) {
+            friendsRecords.push({
+                uid: idOfFriend,
+                name: friend.name,
+                username: friend.username,
+                record: record
+            });
+        }
+    }
+    return friendsRecords;
+}
+
 
 
 // Page d'accueil
@@ -216,10 +237,12 @@ app.get('/consulter', async (req, res) => {
 
     const dateR = req.query.date;
     const recordR = await database.getRecordByDate(req.session.username, dateR);
+    const friendsRecords = await getFriendsRecords( await getFriends(req.session), dateR);
     if (recordR) {
         res.render('consultrecord', {
             error : null,
             record : recordR,
+            friendsRecords : friendsRecords
         });
     } else {
         res.render('consultrecord', {
@@ -232,6 +255,7 @@ app.get('/consulter', async (req, res) => {
                 title : null,
                 content : null
             },
+            friendsRecords : friendsRecords
         });
     }
 });
