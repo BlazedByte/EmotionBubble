@@ -487,7 +487,7 @@ app.post('/modification-post',  async (req, res) => {
         return;
     }
 
-    if (! req.body.date || ! req.body.mood || ! req.body.weather || ! req.body.title || ! req.body.content) {
+    if (! req.body.date || ! req.body.mood || ! req.body.weather) {
         req.session.error = ERROR_MESSAGES.MISSING_FIELDS;
         res.redirect('/new');
         return;
