@@ -45,5 +45,9 @@ export const ERROR_MESSAGES = {
     USERNAME_USED : {
         type : 'danger',
         content : 'Ce nom d\'utilisateur est déjà utilisé.'
+    },
+    FRIEND_NOT_FOUND : {
+        type : 'danger',
+        content : 'Utilisateur introuvable dans votre liste d\'amis.'
     }
 }

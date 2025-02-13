@@ -212,9 +212,12 @@ app.get('/new', (req, res) => {
         return;
     }
 
+    const error = req.session.error;
+    req.session.error = null;
+
     const dateR = req.query.date;
     res.render('formrecord', {
-        error : null,
+        error : error,
         record : {
             date : dateR,
             mood : null,
@@ -277,7 +280,11 @@ app.get('/modif-record', async (req, res) => {
             record : recordR,
         });
     } else {
-        res.redirect('/new?date=' + dateR);
+        if (dateR) {
+            res.redirect('/new?date=' + dateR);
+        } else {
+            res.redirect('/new');
+        }
     }
 });
 
@@ -296,7 +303,11 @@ app.get('/delete-record', async (req, res) => {
         database.deleteRecord(recordR.id);
         res.redirect('/dashboard');
     } else {
-        res.redirect('/consulter?date=' + dateR);
+        if (dateR) {
+            res.redirect('/new?date=' + dateR);
+        } else {
+            res.redirect('/new');
+        }
     }
 });
 
@@ -343,6 +354,21 @@ app.get('/ami', async (req, res) => {
         return;
     }
 
+    if (! req.query.username ) {
+        req.session.error = ERROR_MESSAGES.MISSING_FIELDS;
+        res.redirect('/profil');
+        return;
+    }
+
+    const friendsArray = await getFriends(req.session);
+    const friendsUsernamesArray = friendsArray.map((f) => f.username);
+
+    if (!friendsUsernamesArray.includes(req.query.username)) {
+        req.session.error = ERROR_MESSAGES.FRIEND_NOT_FOUND;
+        res.redirect('/profil');
+        return;
+    }
+
     const friend = await database.getUser(req.query.username);
 
     res.render('history', {
@@ -358,6 +384,12 @@ app.get('/delete-friend', async (req, res) => {
     if (!req.session.username) {
         req.session.error = ERROR_MESSAGES.NOT_LOGGED;
         res.redirect('/login');
+        return;
+    }
+
+    if (! req.query.username ) {
+        req.session.error = ERROR_MESSAGES.MISSING_FIELDS;
+        res.redirect('/profil');
         return;
     }
 
@@ -377,6 +409,13 @@ app.get('/delete-friend', async (req, res) => {
 
 // Login POST
 app.post('/login-post', async (req, res) => {
+
+    if (! req.body.username || ! req.body.password) {
+        req.session.error = ERROR_MESSAGES.MISSING_FIELDS;
+        res.redirect('/login');
+        return;
+    }
+
     const username = req.body.username;
     const password = req.body.password;
     const hash = tosha256(password);
@@ -398,6 +437,13 @@ app.post('/login-post', async (req, res) => {
 
 // Register POST
 app.post('/register-post', async (req, res) => {
+
+    if (! req.body.username || ! req.body.name || ! req.body.password || ! req.body.passwordrepeat) {
+        req.session.error = ERROR_MESSAGES.MISSING_FIELDS;
+        res.redirect('/login');
+        return;
+    }
+
     const username = req.body.username;
     const name = req.body.name;
     const password = req.body.password;
@@ -438,6 +484,12 @@ app.post('/modification-post',  async (req, res) => {
     if (!req.session.username) {
         req.session.error = ERROR_MESSAGES.NOT_LOGGED;
         res.redirect('/login');
+        return;
+    }
+
+    if (! req.body.date || ! req.body.mood || ! req.body.weather || ! req.body.title || ! req.body.content) {
+        req.session.error = ERROR_MESSAGES.MISSING_FIELDS;
+        res.redirect('/new');
         return;
     }
 
@@ -483,6 +535,12 @@ app.post('/update-profile-post', async (req, res) => {
         return;
     }
 
+    if (! req.body.username && ! req.body.name) {
+        req.session.error = ERROR_MESSAGES.MISSING_FIELDS;
+        res.redirect('/profil');
+        return;
+    }
+
     const username = req.body.username;
     const name = req.body.name;
 
@@ -515,6 +573,12 @@ app.post('/update-profile-password-post', (req, res) => {
         return;
     }
 
+    if (! req.body.password && ! req.body.passwordrepeat) {
+        req.session.error = ERROR_MESSAGES.MISSING_FIELDS;
+        res.redirect('/profil');
+        return;
+    }
+
     const password = req.body.password;
     const password2 = req.body.passwordrepeat;
 
@@ -538,6 +602,12 @@ app.post('/add-friend-post', async (req, res) => {
     if (!req.session.username) {
         req.session.error = ERROR_MESSAGES.NOT_LOGGED;
         res.redirect('/login');
+        return;
+    }
+
+    if (! req.body.username) {
+        req.session.error = ERROR_MESSAGES.MISSING_FIELDS;
+        res.redirect('/profil');
         return;
     }
 
