@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import fs from 'fs';
 
 export function tosha256(data) {
     return crypto.createHash('sha256').update(data).digest('hex');
@@ -31,4 +32,24 @@ export function dateDelta(date, deltaJours) {
         day = `0${day}`;
     }
     return `${year}-${month}-${day}`;
+}
+
+export function log(message) {
+    const date = new Date();
+    const time = date.toISOString();
+    const logMessage = `[${time}] ${message}`;
+    const logFileName = `logs/${getTodaysDate()}.log`;
+
+    console.log(logMessage);
+    fs.appendFileSync(logFileName, logMessage + '\n');
+}
+
+export function logError(error) {
+    const date = new Date();
+    const time = date.toISOString();
+    const logMessage = `[${time}] <ERROR> ${error}`;
+    const logFileName = `logs/${getTodaysDate()}.log`;
+
+    console.error(logMessage);
+    fs.appendFileSync(logFileName, logMessage + '\n');
 }

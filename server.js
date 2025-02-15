@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 
 import * as database from './modules/database.js';
 import { ERROR_MESSAGES } from './modules/errors.js';
-import { tosha256, getTodaysDate, dateDelta } from './modules/tools.js';
+import { tosha256, getTodaysDate, dateDelta, log, logError } from './modules/tools.js';
 
 const PORT = 80;
 const IP = '127.0.0.1'
@@ -340,6 +340,8 @@ app.get('/admin', async (req, res) => {
         return;
     }
 
+    log(req.session.username + " accessed the administration page from IP: " + req.ip);
+
     res.render('admin', {
         error: null,
     });
@@ -428,6 +430,9 @@ app.post('/login-post', async (req, res) => {
         req.session.name = auth.name;
         req.session.friends = auth.friends;
         req.session.uid = auth.id;
+
+       log(req.session.username + " logged in from IP: " + req.ip);
+
         res.redirect('/dashboard');
     } else {
         req.session.error = ERROR_MESSAGES.AUTH_FAILED;
@@ -471,6 +476,9 @@ app.post('/register-post', async (req, res) => {
     });
 
     if (reg) {
+
+        log(username + " registered from IP: " + req.ip);
+
         res.redirect('/login');
     } else {
         req.session.error = ERROR_MESSAGES.USERNAME_USED;
@@ -627,5 +635,5 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, IP, () => {
-    console.log(`Serveur lancé sur http://${IP}:${PORT}`);
+    log(`Server running at http://${IP}:${PORT}`);
 });

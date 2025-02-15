@@ -1,10 +1,11 @@
 import sqlite3 from 'sqlite3';
+import { log, logError } from './tools.js';
 
 const db = new sqlite3.Database('./db/database.db', (err) => {
     if (err) {
-        console.error('Database opening error: ', err);
+        logError('Database opening error: ' + err);
     } else {
-        console.log('Database opened');
+        log('Database opened');
         db.run('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT, name TEXT, password TEXT, admin INTEGER, friends TEXT)');
         db.run('CREATE TABLE IF NOT EXISTS records (id INTEGER PRIMARY KEY, userid INTEGER, date TEXT, visibility INTEGER, title TEXT, content TEXT, mood INTEGER, weather INTEGER, FOREIGN KEY(userid) REFERENCES users(id))');
     }
@@ -16,7 +17,7 @@ export function getUsers() {
     return new Promise((resolve, reject) => {
         db.all('SELECT * FROM users', (err, rows) => {
             if (err) {
-                console.error('Get users error: ', err);
+                logError('Get users error: ' + err);
                 reject(err);
             } else {
                 rows.forEach(element => {
@@ -42,7 +43,7 @@ export function insertUser(user) {
     ];
     db.run(query, params, (err) => {
         if (err) {
-            console.error('Insert user error: ', err);
+            logError('Insert user error: ' + err);
             return false;
         } else {
             return true;
@@ -55,7 +56,7 @@ export function getUser(username) {
         const query = `SELECT * FROM users WHERE username = ?`;
         db.get(query, [username], (err, row) => {
             if (err) {
-                console.error('Get user error: ', err);
+                logError('Get user error: ' + err);
                 reject(err);
             } else {
                 if (row) {
@@ -72,7 +73,7 @@ export function getUserById(uid) {
         const query = `SELECT * FROM users WHERE id = ?`;
         db.get(query, [uid], (err, row) => {
             if (err) {
-                console.error('Get user by id error: ', err);
+                logError('Get user by id error: ' + err);
                 reject(err);
             } else {
                 if (row) {
@@ -89,7 +90,7 @@ export function chechAuth(username, password) {
         const query = `SELECT * FROM users WHERE username = ? AND password = ?`;
         db.get(query, [username, password], (err, row) => {
             if (err) {
-                console.error('Check auth error: ', err);
+                logError('Check auth error: ' + err);
                 reject(err);
             } else {
                 if (row) {
@@ -106,7 +107,7 @@ export function deleteUser(userId) {
         const query = `DELETE FROM users WHERE id = ?`;
         db.run(query, [userId], (err) => {
             if (err) {
-                console.error('Delete user error: ', err);
+                logError('Delete user error: ' + err);
                 reject(err);
             } else {
                 resolve();
@@ -120,7 +121,7 @@ export function updateUser(uid, new_username, new_name) {
         const query = `UPDATE users SET username = ?, name = ? WHERE id = ?`;
         db.run(query, [new_username, new_name, uid], (err) => {
             if (err) {
-                console.error('Update user error: ', err);
+                logError('Update user error: ' + err);
                 reject(err);
             } else {
                 resolve();
@@ -134,7 +135,7 @@ export function updateUserPwd(uid, new_pwd) {
         const query = `UPDATE users SET password = ? WHERE id = ?`;
         db.run(query, [new_pwd, uid], (err) => {
             if (err) {
-                console.error('Update user password error: ', err);
+                logError('Update user password error: ' + err);
                 reject(err);
             } else {
                 resolve();
@@ -148,14 +149,14 @@ export async function addFriend(uid, friendId) {
     const userFriends = user.friends;
 
     if (userFriends.includes(friendId)) {
-        console.error('Add friend error: friend already in list');
+        logError('Add friend error: friend already in list');
         return false;
     } else {
         userFriends.push(friendId);
         const query = `UPDATE users SET friends = ? WHERE id = ?`;
         db.run(query, [JSON.stringify(userFriends), uid], (err) => {
             if (err) {
-                console.error('Add friend error:', err);
+                logError('Add friend error: ' + err);
                 return false;
             } else {
                 return true;
@@ -173,14 +174,14 @@ export async function deleteFriend(uid, friendId) {
         const query = `UPDATE users SET friends = ? WHERE id = ?`;
         db.run(query, [JSON.stringify(userFriends), uid], (err) => {
             if (err) {
-                console.error('Delete friend error:', err);
+                logError('Delete friend error:' + err);
                 return false;
             } else {
                 return true;
             }
         });
     } else {
-        console.error('Delete friend error: friend not found');
+        logError('Delete friend error: friend not found');
         return false;
     }
 }
@@ -203,7 +204,7 @@ export function insertRecord(record) {
     ];
     db.run(query, params, function(err) {
         if (err) {
-            console.error('Insert record error:', err);
+            logError('Insert record error:' + err);
             return false;
         } else {
             return true;
@@ -228,7 +229,7 @@ export function updateRecord(record) {
     ];
     db.run(query, params, function(err) {
         if (err) {
-            console.error('Update record error:', err);
+            logError('Update record error:' + err);
             return false;
         } else {
             return true;
@@ -242,7 +243,7 @@ export function getRecords(username, limit = undefined) {
         return new Promise((resolve, reject) => {
             db.all(baseQuery, [username], (err, rows) => {
                 if (err) {
-                    console.error('Get records error:', err);
+                    logError('Get records error:' + err);
                     reject(err);
                 } else {
                     resolve(rows);
@@ -254,7 +255,7 @@ export function getRecords(username, limit = undefined) {
             const query = `${baseQuery} LIMIT ?`;
             db.all(query, [username, limit], (err, rows) => {
                 if (err) {
-                    console.error('Get records error:', err);
+                    logError('Get records error:' + err);
                     reject(err);
                 } else {
                     resolve(rows);
@@ -269,7 +270,7 @@ export function getRecordByDate(username, date) {
     return new Promise((resolve, reject) => {
         db.get(query, [username, date], (err, row) => {
             if (err) {
-                console.error('Get record by date error:', err);
+                logError('Get record by date error:' + err);
                 reject(err);
             } else {
                 resolve(row);
@@ -283,7 +284,7 @@ export function deleteRecord(recordId) {
         const query = `DELETE FROM records WHERE id = ?`;
         db.run(query, [recordId], (err) => {
             if (err) {
-                console.error('Delete record error:', err);
+                logError('Delete record error:' + err);
                 reject(err);
             } else {
                 resolve();
