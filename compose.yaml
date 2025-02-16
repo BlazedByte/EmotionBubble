@@ -1,0 +1,12 @@
+services:
+  server:
+    build:
+      context: .
+    environment:
+      NODE_ENV: production
+    ports:
+      - 80:80
+    volumes:
+      - ./db:/usr/src/app/db
+      - ./logs:/usr/src/app/logs
+    restart: always

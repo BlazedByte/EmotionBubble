@@ -11,14 +11,8 @@ git clone https://github.com/BlazedByte/EmotionBubble.git
 
 ### Avec Docker
 
-Construction de l'image :
 ```bash
-docker build -t emotion-bubble .
-```
-
-Lancement du conteneur :
-```bash
-docker run -p 80:80 emotion-bubble
+docker-compose up -d --build
 ```
 
 ### Avec Node.js
@@ -44,6 +38,7 @@ npm start
 - [x] Ajouter la page "administration"
 - [x] Ajouter un système de partage de données entre utilisateurs (+ page amis) avec gestion de la visibilité des enregistrements
 - [x] Ajouter la visibilité des enregistrements de ses amis dans la page de consultation
+- [x] Contneriser l'application et assurer la persistance des données
 - [ ] Ajouter un dark mode
 - [ ] Ajouter un paramètre de style pour les couleurs de l'application
 - [ ] Ajouter une vue "calendrier" pour voir les émotions de chaque jour
