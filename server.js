@@ -9,7 +9,7 @@ import { ERROR_MESSAGES } from './modules/errors.js';
 import { tosha256, getTodaysDate, dateDelta, log, logError } from './modules/tools.js';
 
 const PORT = 80;
-const IP = '127.0.0.1'
+const IP = '0.0.0.0'
 const app = express();
 // Gestion du chemin pour ESM
 const __filename = fileURLToPath(import.meta.url);

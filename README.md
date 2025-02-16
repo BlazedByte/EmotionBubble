@@ -9,6 +9,20 @@ Pour installer l'application, il vous suffit de cloner le projet sur votre machi
 git clone https://github.com/BlazedByte/EmotionBubble.git
 ```
 
+### Avec Docker
+
+Construction de l'image :
+```bash
+docker build -t emotion-bubble .
+```
+
+Lancement du conteneur :
+```bash
+docker run -p 80:80 emotion-bubble
+```
+
+### Avec Node.js
+
 N'oubliez pas d'installer les dépendances avec la commande suivante :
 ```bash
 npm install
