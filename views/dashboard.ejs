@@ -101,7 +101,7 @@
         <% } %>
 
         <!-- Liste des enregistrements -->
-        <div class="list-group">
+        <div class="list-group mb-5">
             <% jours.forEach(jour => { %>
             <% if (!jour.mood) { %>
             <a href="/consulter?date=<%= jour.date %>" class="list-group-item d-flex align-items-center bg-light text-muted">
