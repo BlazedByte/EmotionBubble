@@ -39,7 +39,7 @@ npm start
 - [x] Ajouter un système de partage de données entre utilisateurs (+ page amis) avec gestion de la visibilité des enregistrements
 - [x] Ajouter la visibilité des enregistrements de ses amis dans la page de consultation
 - [x] Contneriser l'application et assurer la persistance des données
+- [x] Ajouter un système de statistiques + page "statistiques"
 - [ ] Ajouter un dark mode
-- [ ] Ajouter un paramètre de style pour les couleurs de l'application
 - [ ] Ajouter une vue "calendrier" pour voir les émotions de chaque jour
-- [ ] Ajouter un système de statistiques + page "statistiques"
+- [ ] Ajouter un paramètre de style pour les couleurs de l'application

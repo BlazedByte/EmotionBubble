@@ -5,7 +5,8 @@
     "description": "A simple web app that allows users to post their emotions.",
     "main": "server.js",
     "scripts": {
-        "start": "node server.js"
+        "start": "node server.js",
+        "dev": "nodemon server.js"
     },
     "dependencies": {
         "ejs": "^3.1.10",

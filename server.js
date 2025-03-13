@@ -85,6 +85,12 @@ async function getAllRecords(username) {
     return records;
 }
 
+async function getRecordsByMonth(username, month) {
+    // month is a string in the format 'YYYY-MM'
+    let records = await database.getRecordsByMonth(username, month);
+    return records;
+}
+
 async function getFriends(user) {
     const uid = user.uid;
     const realFriends = [];
@@ -403,6 +409,52 @@ app.get('/delete-friend', async (req, res) => {
     req.session.friends = req.session.friends.filter((f) => f != friend_id);
     req.session.error = ERROR_MESSAGES.FRIEND_DELETED;
     res.redirect('/profil');
+});
+
+// Page de statistiques
+
+app.get('/statistiques', async (req, res) => {
+
+    if (!req.session.username) {
+        req.session.error = ERROR_MESSAGES.NOT_LOGGED;
+        res.redirect('/login');
+        return;
+    }
+
+    const mois = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+
+    const oldestRecord = await database.getOldestRecord(req.session.username);
+    const oldestYear = oldestRecord ? oldestRecord.date.substring(0, 4) : getTodaysDate().substring(0, 4);
+
+    const years = [];
+    for (let i = parseInt(oldestYear); i <= parseInt(getTodaysDate().substring(0, 4)); i++) {
+        years.push(i);
+    }
+
+    const annee = req.query.annee ? req.query.annee : getTodaysDate().substring(0, 4);
+    const dataAnnee = [];
+
+    for (let i = 0; i < 12; i++) {
+        const month = (i + 1).toString().padStart(2, '0');
+        const firstDayOfMonth = new Date(`${annee}-${month}-01`);
+        const iFirstWeekDay = firstDayOfMonth.getDay();
+        const nomDuMois = mois[firstDayOfMonth.getMonth()] + ' ' + firstDayOfMonth.getFullYear();
+        const records = await getRecordsByMonth(req.session.username, `${annee}-${month}`);
+        const nbOfDays = new Date(firstDayOfMonth.getFullYear(), firstDayOfMonth.getMonth() + 1, 0).getDate();
+
+        dataAnnee.push({
+            records: records,
+            iFirstWeekDay: iFirstWeekDay,
+            nomDuMois: nomDuMois,
+            nbOfDays: nbOfDays,
+        });
+    }
+    res.render('stats', {
+        user: req.session,
+        dataAnnee: dataAnnee,
+        years : years,
+        annee: annee
+    });
 });
 
 

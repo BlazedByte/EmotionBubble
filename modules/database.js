@@ -292,3 +292,31 @@ export function deleteRecord(recordId) {
         });
     });
 }
+
+export function getRecordsByMonth(username, month) {
+    const query = `SELECT * FROM records WHERE userid = (SELECT id FROM users WHERE username = ?) AND date LIKE ? ORDER BY date DESC`;
+    return new Promise((resolve, reject) => {
+        db.all(query, [username, month + '%'], (err, rows) => {
+            if (err) {
+                logError('Get records by month error:' + err);
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
+export function getOldestRecord(username) {
+    const query = `SELECT * FROM records WHERE userid = (SELECT id FROM users WHERE username = ?) ORDER BY date ASC LIMIT 1`;
+    return new Promise((resolve, reject) => {
+        db.get(query, [username], (err, row) => {
+            if (err) {
+                logError('Get oldest record error:' + err);
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
+}
