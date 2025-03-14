@@ -40,6 +40,8 @@ npm start
 - [x] Ajouter la visibilité des enregistrements de ses amis dans la page de consultation
 - [x] Contneriser l'application et assurer la persistance des données
 - [x] Ajouter un système de statistiques + page "statistiques"
+- [ ] Ajouter un système de MDP avec contraintes de sécurité
+- [ ] Ajouter des fonctionnalités à la page "administration"
 - [ ] Ajouter un dark mode
 - [ ] Ajouter une vue "calendrier" pour voir les émotions de chaque jour
 - [ ] Ajouter un paramètre de style pour les couleurs de l'application

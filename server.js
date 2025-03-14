@@ -2,6 +2,7 @@ import express from 'express';
 import session from 'express-session';
 import crypto from 'crypto';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 import * as database from './modules/database.js';
@@ -14,6 +15,14 @@ const app = express();
 // Gestion du chemin pour ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Check and create directories if they don't exist
+const directories = ['db', 'logs'];
+directories.forEach(dir => {
+    if (!fs.existsSync(path.join(__dirname, dir))) {
+        fs.mkdirSync(path.join(__dirname, dir));
+    }
+});
 
 // Configuration d'EJS comme moteur de rendu
 app.set('view engine', 'ejs');
