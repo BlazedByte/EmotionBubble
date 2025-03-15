@@ -90,8 +90,21 @@
                 <% let size = '20' %>
                 <% for (m of dataAnnee) { %>
                     <div class="card m-2" style="width: 242px;">
-                        <div class="card-header">
+                        <div class="card-header d-flex justify-content-between align-items-center">
                             <h5><%= m.nomDuMois %></h5>
+                            <% let color = '#EBEDF0' %>
+                            <% if (m.moyenneMood == '1') { %>
+                                <% color = '#386C3E' %>
+                            <% } else if (m.moyenneMood == '2') { %>
+                                <% color = '#69C16E' %>
+                            <% } else if (m.moyenneMood == '3') { %>
+                                <% color = 'yellowgreen' %>
+                            <% } else if (m.moyenneMood == '4') { %>
+                                <% color = '#FFA62B' %>
+                            <% } else if (m.moyenneMood == '5') { %>
+                                <% color = '#A72608' %>
+                            <% } %>
+                            <div style="width: <%= size %>px; height: <%= size %>px; background-color: <%= color %>; border-radius: 5px; border: 1px solid #E0E2E5;"></div>
                         </div>
                         <div class="card-body">
                             <div style="background-color: #FFFFFF; display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; padding: 15px; border-radius: 15px; width: 210px;">

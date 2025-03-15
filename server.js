@@ -444,6 +444,8 @@ app.get('/statistiques', async (req, res) => {
     const dataAnnee = [];
 
     for (let i = 0; i < 12; i++) {
+        let moyenneMood = 0;
+        let nbRecords = 0;
         const month = (i + 1).toString().padStart(2, '0');
         const firstDayOfMonth = new Date(`${annee}-${month}-01`);
         const iFirstWeekDay = firstDayOfMonth.getDay();
@@ -451,11 +453,21 @@ app.get('/statistiques', async (req, res) => {
         const records = await getRecordsByMonth(req.session.username, `${annee}-${month}`);
         const nbOfDays = new Date(firstDayOfMonth.getFullYear(), firstDayOfMonth.getMonth() + 1, 0).getDate();
 
+        for (let r of records) {
+            if (r.mood) {
+                nbRecords++;
+                moyenneMood += r.mood;
+            }
+        }
+        moyenneMood = nbRecords > 0 ? moyenneMood / nbRecords : 0;
+        moyenneMood = Math.round(moyenneMood);
+
         dataAnnee.push({
             records: records,
             iFirstWeekDay: iFirstWeekDay,
             nomDuMois: nomDuMois,
             nbOfDays: nbOfDays,
+            moyenneMood: moyenneMood
         });
     }
     res.render('stats', {
