@@ -340,9 +340,7 @@ app.get('/profil', async (req, res) => {
     
     res.render('profile', {
         error : error,
-        user: req.session,
-        friends : await getFriends(req.session),
-        friendRequests : await getFriendRequests(req.session)
+        user: req.session
     });
 });
 
@@ -359,6 +357,24 @@ app.get('/admin', async (req, res) => {
 
     res.render('admin', {
         error: null,
+    });
+});
+
+app.get('/amis', async (req, res) => { // TODO
+    if (!req.session.username) {
+        req.session.error = ERROR_MESSAGES.NOT_LOGGED;
+        res.redirect('/login');
+        return;
+    }
+
+    const error = req.session.error;
+    req.session.error = null;
+    
+    res.render('friends', {
+        error : error,
+        user: req.session,
+        friends : await getFriends(req.session),
+        friendRequests : await getFriendRequests(req.session)
     });
 });
 
@@ -467,14 +483,16 @@ app.get('/statistiques', async (req, res) => {
             iFirstWeekDay: iFirstWeekDay,
             nomDuMois: nomDuMois,
             nbOfDays: nbOfDays,
-            moyenneMood: moyenneMood
+            moyenneMood: moyenneMood,
+            mois: `${annee}-${month}`
         });
     }
     res.render('stats', {
         user: req.session,
         dataAnnee: dataAnnee,
         years : years,
-        annee: annee
+        annee: annee,
+        todaysDate : getTodaysDate()
     });
 });
 
