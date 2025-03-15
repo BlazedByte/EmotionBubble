@@ -6,7 +6,7 @@ EmotionBubble est une application web qui vous permet de suivre vos émotions et
 
 Pour installer l'application, il vous suffit de cloner le projet sur votre machine.
 ```bash
-git clone https://github.com/BlazedByte/EmotionBubble.git
+git clone https://github.com/Nash115/EmotionBubble.git
 ```
 
 ### Avec Docker
@@ -40,7 +40,9 @@ npm start
 - [x] Ajouter la visibilité des enregistrements de ses amis dans la page de consultation
 - [x] Contneriser l'application et assurer la persistance des données
 - [x] Ajouter un système de statistiques + page "statistiques"
-- [ ] Ajouter un système de MDP avec contraintes de sécurité
+- [ ] Ajouter un système de MDP avec contraintes de sécurité
+- [ ] Ajouter une page ami séparée des paramètres
+- [ ] Ajouter un bouton pour afficher le mdp lors de l'inscription / connexion
 - [ ] Ajouter des fonctionnalités à la page "administration"
 - [ ] Ajouter un dark mode
 - [ ] Ajouter une vue "calendrier" pour voir les émotions de chaque jour
