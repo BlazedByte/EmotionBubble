@@ -30,12 +30,33 @@
                     
                     <hr>
 
+                    <h2>Logs :</h2>
+
+                    <select name="selectLog" id="selectLog">
+                        <% for (let logfile of logFiles) { %>
+                            <% if (logfile === logDisplayed) { %>
+                                <option value="<%= logfile %>" selected><%= logfile %></option>
+                            <% } else { %>
+                                <option value="<%= logfile %>"><%= logfile %></option>
+                            <% } %>
+                        <% } %>
+                    </select>
+
+                    <pre><% for (let log of logs) { %><%= log %><br><% } %></pre>
+
                 </div>
             </div>
         </div>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+        document.getElementById('selectLog').addEventListener('change', function() {
+            const selectedValue = this.value.replace('.log', '');
+            window.location.href = '/admin?dateLogs=' + selectedValue;
+        });
+    </script>
 </body>
 
 </html>

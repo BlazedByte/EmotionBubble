@@ -28,8 +28,5 @@ npm start
 
 ## TODO
 - Système de MDP avec contraintes de sécurité
-- Bouton pour afficher le mdp lors de l'inscription / connexion
-- Peupler la page "administration"
 - Dark mode
-- Vue "calendrier" pour voir les émotions de chaque jour
 - Paramètre de style pour les couleurs de l'application

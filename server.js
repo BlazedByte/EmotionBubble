@@ -158,6 +158,20 @@ async function getFriendsRecords(friendsArray, date) {
     return friendsRecords;
 }
 
+function getLogsByDate(date) {
+    const logFilePath = path.join(__dirname, 'logs', `${date}.log`);
+    if (fs.existsSync(logFilePath)) {
+        const logData = fs.readFileSync(logFilePath, 'utf-8');
+        return logData.split('\n').filter(line => line.trim() !== '');
+    } else {
+        return [];
+    }
+}
+
+function getExistingLogs() {
+    const logFiles = fs.readdirSync(path.join(__dirname, 'logs'));
+    return logFiles;
+}
 
 
 // Page d'accueil
@@ -355,8 +369,15 @@ app.get('/admin', async (req, res) => {
 
     log(req.session.username + " accessed the administration page from IP: " + req.ip);
 
+    const dateLogs = req.query.dateLogs ? req.query.dateLogs : getTodaysDate();
+
+    const logsArray = getLogsByDate(dateLogs);
+
     res.render('admin', {
         error: null,
+        logs: logsArray,
+        logFiles: getExistingLogs(),
+        logDisplayed: dateLogs + '.log'
     });
 });
 
