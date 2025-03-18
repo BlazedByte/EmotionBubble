@@ -381,7 +381,7 @@ app.get('/admin', async (req, res) => {
     });
 });
 
-app.get('/amis', async (req, res) => { // TODO
+app.get('/amis', async (req, res) => {
     if (!req.session.username) {
         req.session.error = ERROR_MESSAGES.NOT_LOGGED;
         res.redirect('/login');
@@ -482,6 +482,7 @@ app.get('/statistiques', async (req, res) => {
 
     for (let i = 0; i < 12; i++) {
         let moyenneMood = 0;
+        let moyenneWeather = 0;
         let nbRecords = 0;
         const month = (i + 1).toString().padStart(2, '0');
         const firstDayOfMonth = new Date(`${annee}-${month}-01`);
@@ -494,10 +495,13 @@ app.get('/statistiques', async (req, res) => {
             if (r.mood) {
                 nbRecords++;
                 moyenneMood += r.mood;
+                moyenneWeather += r.weather;
             }
         }
         moyenneMood = nbRecords > 0 ? moyenneMood / nbRecords : 0;
         moyenneMood = Math.round(moyenneMood);
+        moyenneWeather = nbRecords > 0 ? moyenneWeather / nbRecords : 0;
+        moyenneWeather = Math.round(moyenneWeather);
 
         dataAnnee.push({
             records: records,
@@ -505,6 +509,7 @@ app.get('/statistiques', async (req, res) => {
             nomDuMois: nomDuMois,
             nbOfDays: nbOfDays,
             moyenneMood: moyenneMood,
+            moyenneWeather: moyenneWeather,
             mois: `${annee}-${month}`
         });
     }

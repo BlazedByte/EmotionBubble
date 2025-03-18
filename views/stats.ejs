@@ -113,6 +113,21 @@
                             <% } else if (m.moyenneMood == '5') { %>
                                 <% color = '#A72608' %>
                             <% } %>
+                            <% if (m.moyenneWeather) { %>
+                                <div class="d-flex align-items-center">
+                                    <% if (m.moyenneWeather == '1') { %>
+                                        <img src="/weather/1.png" alt="Soleil" width="<%=size%>px" height="<%=size%>px">
+                                    <% } else if (m.moyenneWeather == '2') { %>
+                                        <img src="/weather/2.png" alt="Nuageux" width="<%=size%>px" height="<%=size%>px">
+                                    <% } else if (m.moyenneWeather == '3') { %>
+                                        <img src="/weather/3.png" alt="Pluie" width="<%=size%>px" height="<%=size%>px">
+                                    <% } else if (m.moyenneWeather == '4') { %>
+                                        <img src="/weather/4.png" alt="Orage" width="<%=size%>px" height="<%=size%>px">
+                                    <% } else if (m.moyenneWeather == '5') { %>
+                                        <img src="/weather/5.png" alt="Neige" width="<%=size%>px" height="<%=size%>px">
+                                    <% } %>
+                                </div>
+                            <% } %>
                             <div style=<%='width:'+size+'px;height:'+size+'px;background-color:'+color+';border-radius:5px;border:1px,solid,#E0E2E5;'%>></div>
                         </div>
                         <div class="card-body">
