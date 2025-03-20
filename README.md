@@ -27,6 +27,5 @@ npm start
 ```
 
 ## TODO
-- Système de MDP avec contraintes de sécurité
 - Dark mode
 - Paramètre de style pour les couleurs de l'application

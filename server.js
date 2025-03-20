@@ -173,6 +173,17 @@ function getExistingLogs() {
     return logFiles;
 }
 
+function isSecurePassword(password) {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const hasNoSpaces = !/\s/.test(password);
+    const isLongEnough = password.length >= minLength;
+    return hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChars && hasNoSpaces && isLongEnough;
+}
+
 
 // Page d'accueil
 app.get('/', (req, res) => {
@@ -566,11 +577,17 @@ app.post('/register-post', async (req, res) => {
         return;
     }
 
-    const username = req.body.username;
+    const username = req.body.username.trim();
     const name = req.body.name;
-    const password = req.body.password;
-    const password2 = req.body.passwordrepeat;
+    const password = req.body.password.trim();
+    const password2 = req.body.passwordrepeat.trim();
     const hash = tosha256(password);
+
+    if (!isSecurePassword(password)) {
+        req.session.error = ERROR_MESSAGES.PASSWORD_NOT_SECURE;
+        res.redirect('/register');
+        return;
+    }
 
     if (password != password2) {
         req.session.error = ERROR_MESSAGES.PWDS_NOT_MATCH;
@@ -706,6 +723,12 @@ app.post('/update-profile-password-post', (req, res) => {
 
     const password = req.body.password;
     const password2 = req.body.passwordrepeat;
+
+    if (!isSecurePassword(password)) {
+        req.session.error = ERROR_MESSAGES.PASSWORD_NOT_SECURE;
+        res.redirect('/profil');
+        return;
+    }
 
     if (password != password2) {
         req.session.error = ERROR_MESSAGES.PWDS_NOT_MATCH;

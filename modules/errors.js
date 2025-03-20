@@ -34,6 +34,10 @@ export const ERROR_MESSAGES = {
         type : 'danger',
         content : 'Les mots de passes ne correspondent pas.'
     },
+    PASSWORD_NOT_SECURE : {
+        type : 'danger',
+        content : 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.'
+    },
     AUTH_FAILED : {
         type : 'danger',
         content : 'Les informations saisies sont incorrectes.'
