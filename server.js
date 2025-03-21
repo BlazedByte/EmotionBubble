@@ -460,6 +460,11 @@ app.get('/delete-friend', async (req, res) => {
 
     const friend_username = req.query.username;
     const friend = await database.getUser(friend_username);
+    if (!friend) {
+        req.session.error = ERROR_MESSAGES.USER_NOT_FOUND;
+        res.redirect('/profil');
+        return;
+    }
     const friend_id = friend.id;
     await database.deleteFriend(req.session.uid, friend_id);
 
@@ -761,6 +766,11 @@ app.post('/add-friend-post', async (req, res) => {
 
     const friend_username = req.body.username;
     const friend = await database.getUser(friend_username);
+    if (!friend) {
+        req.session.error = ERROR_MESSAGES.USER_NOT_FOUND;
+        res.redirect('/profil');
+        return;
+    }
     const friend_id = friend.id;
     await database.addFriend(req.session.uid, friend_id);
 

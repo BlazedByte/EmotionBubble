@@ -46,6 +46,10 @@ export const ERROR_MESSAGES = {
         type : 'danger',
         content : 'Veuillez remplir tous les champs.'
     },
+    USER_NOT_FOUND : {
+        type : 'danger',
+        content : 'Utilisateur introuvable.'
+    },
     USERNAME_USED : {
         type : 'danger',
         content : 'Ce nom d\'utilisateur est déjà utilisé.'
