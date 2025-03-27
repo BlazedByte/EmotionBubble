@@ -579,7 +579,7 @@ app.post('/register-post', async (req, res) => {
 
     if (! req.body.username || ! req.body.name || ! req.body.password || ! req.body.passwordrepeat) {
         req.session.error = ERROR_MESSAGES.MISSING_FIELDS;
-        res.redirect('/login');
+        res.redirect('/register');
         return;
     }
 
@@ -761,7 +761,7 @@ app.post('/add-friend-post', async (req, res) => {
 
     if (! req.body.username) {
         req.session.error = ERROR_MESSAGES.MISSING_FIELDS;
-        res.redirect('/profil');
+        res.redirect('/amis');
         return;
     }
 
@@ -769,7 +769,7 @@ app.post('/add-friend-post', async (req, res) => {
     const friend = await database.getUser(friend_username);
     if (!friend) {
         req.session.error = ERROR_MESSAGES.USER_NOT_FOUND;
-        res.redirect('/profil');
+        res.redirect('/amis');
         return;
     }
     const friend_id = friend.id;
@@ -777,7 +777,7 @@ app.post('/add-friend-post', async (req, res) => {
 
     req.session.friends.push(friend_id);
     req.session.error = ERROR_MESSAGES.FRIEND_ADDED;
-    res.redirect('/profil');
+    res.redirect('/amis');
 });
 
 
