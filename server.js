@@ -378,13 +378,12 @@ app.get('/admin', async (req, res) => {
         return;
     }
 
-    log(req.session.username + " accessed the administration page from IP: " + req.ip);
-
     const dateLogs = req.query.dateLogs ? req.query.dateLogs : getTodaysDate();
 
     const logsArray = getLogsByDate(dateLogs);
 
     res.render('admin', {
+        user: req.session,
         error: null,
         logs: logsArray,
         logFiles: getExistingLogs(),
