@@ -27,5 +27,4 @@ npm start
 ```
 
 ## TODO
-- Dark mode
 - Paramètre de style pour les couleurs de l'application
