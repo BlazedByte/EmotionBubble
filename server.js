@@ -180,7 +180,7 @@ function isSecurePassword(password) {
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
     const hasNumbers = /\d/.test(password);
-    const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const hasSpecialChars = /[!@#$%^&*(),-.?":{}|<>]/.test(password);
     const hasNoSpaces = !/\s/.test(password);
     const isLongEnough = password.length >= minLength;
     return hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChars && hasNoSpaces && isLongEnough;
